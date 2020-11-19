@@ -1,0 +1,29 @@
+{
+  "name": "dynamicwebsystems",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "devStart": "nodemon server.js localhost 4000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tohsic-7/DynamicWebSystems.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tohsic-7/DynamicWebSystems/issues"
+  },
+  "homepage": "https://github.com/tohsic-7/DynamicWebSystems#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.4.0",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.10.15"
+  }
+}
