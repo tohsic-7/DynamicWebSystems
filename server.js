@@ -13,7 +13,7 @@ var peopleSchema = new mongoose.Schema(
   }
 );
 
-var Model = mongoose.model("model",peopleSchema, "people");
+var Model = mongoose.model("model",peopleSchema, "prosumer");
 
 
 const PersonType = new GraphQLObjectType({
