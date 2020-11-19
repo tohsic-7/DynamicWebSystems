@@ -2,18 +2,10 @@ var express = require('express');
 var { graphqlHTTP } = require('express-graphql');
 var { buildSchema, GraphQLObjectType } = require('graphql');
 var mongoose = require('mongoose');
-
-var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/grid";
-var dbo;
 
 
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  dbo = db.db("grid");
-}); 
-
-mongoose.connect(url);
+mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
 
 var peopleSchema = new mongoose.Schema(
   {
