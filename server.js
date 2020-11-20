@@ -76,7 +76,15 @@ type Mutation{
     online: Boolean,
     img_path: String):Prosumer
 
-  insertConsumer(id: Int, consumption: Int):Consumer
+  insertConsumer(
+    id: Int,
+    consumption: Int
+    ):Consumer
+
+  updateConsumer(
+    id: Int,
+    consumption: Int
+  ): 
   
 }
 
