@@ -4,17 +4,14 @@ var { buildSchema, GraphQLObjectType } = require('graphql');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 
-var Prosumer = require('./models/prosumer.js');
-var Manager = require('./models/manager.js');
-var Consumer = require('./models/consumer.js');
+//-------Models---------
+var Prosumer = require('./models/prosumer');
+var Consumer = require('./models/consumer');
+var Manager = require('./models/manager');
+
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
 
-var peopleSchema = new mongoose.Schema(
-  {
-    user_id: String
-  }
-);
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
@@ -22,6 +19,7 @@ var schema = buildSchema(`
     hello: String
     getOneProsumer(id: Int): Prosumer
     getProsumers: [Prosumer]
+    getConsumers: [Consumer]
   }
 
   type Prosumer{
@@ -34,7 +32,12 @@ var schema = buildSchema(`
     ratio_under: Int,
     online: Boolean,
     img_path: String
-}
+  }
+
+  type Consumer{
+    id: Int,
+    consumption: Int
+  }
 
 type Mutation{
   insertProsumer(
@@ -59,8 +62,11 @@ type Mutation{
     ratio_under: Int,
     online: Boolean,
     img_path: String):Prosumer
+
+  insertConsumer(id: Int, consumption: Int):Consumer
   
 }
+
 `);
  
 // The root provides a resolver function for each API endpoint
@@ -68,9 +74,15 @@ var root = {
   hello: () => { 
     return 'Hejsan';
   },
+  getConsumers: ()=> {
+    values = Consumer.find();
+    console.log(values['data'])
+    return values;
+  },
   getOneProsumer: (args)=> {
     values = Prosumer.findOne({ id: args.id });
     console.log(values);
+  
     return values;
   },
   getProsumers: ()=> {
@@ -105,6 +117,13 @@ var root = {
     values.save(function(err, prosumer){
       if (err) return console.error(err);
     })
+  },
+  
+  insertConsumer: (args) => {
+    var consumer = new Consumer({id: args.id, consumption: args.consumption});
+    consumer.save(function(err, result){
+      if (err) return console.error(err);
+    });
   }
 };
 
