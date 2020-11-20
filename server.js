@@ -4,6 +4,9 @@ var { buildSchema, GraphQLObjectType } = require('graphql');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 
+var Prosumer = require('./models/prosumer.js');
+var Manager = require('./models/manager.js');
+var Consumer = require('./models/consumer.js');
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
 
@@ -13,31 +16,50 @@ var peopleSchema = new mongoose.Schema(
   }
 );
 
-var Model = mongoose.model("model",peopleSchema, "prosumer");
-
-
-const PersonType = new GraphQLObjectType({
-    name: "Person",
-    fields: {
-      user_id: {type: String}
-    }
-});
-
-
-
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
   type Query {
     hello: String
-    getPeople: [Person]
+    getOneProsumer(id: Int): Prosumer
+    getProsumers: [Prosumer]
   }
 
-  type Person{
-    user_id: String
+  type Prosumer{
+    id: Int,
+    buffer: Int,
+    wind: Int,
+    consumption: Int,
+    production: Int,
+    ratio_excess: Int,
+    ratio_under: Int,
+    online: Boolean,
+    img_path: String
 }
 
 type Mutation{
-  insertPerson(user_id: String):Person
+  insertProsumer(
+    id: Int,
+    buffer: Int,
+    wind: Int,
+    consumption: Int,
+    production: Int,
+    ratio_excess: Int,
+    ratio_under: Int,
+    online: Boolean,
+    img_path: String):Prosumer
+  
+
+  updateProsumer(
+    id: Int,
+    buffer: Int,
+    wind: Int,
+    consumption: Int,
+    production: Int,
+    ratio_excess: Int,
+    ratio_under: Int,
+    online: Boolean,
+    img_path: String):Prosumer
+  
 }
 `);
  
@@ -46,18 +68,46 @@ var root = {
   hello: () => { 
     return 'Hejsan';
   },
-  getPeople: ()=> {
-    values = dbo.collection('people').find().toArray().then(res => { return res });
+  getOneProsumer: (args)=> {
+    values = Prosumer.findOne({ id: args.id });
+    console.log(values);
     return values;
+  },
+  getProsumers: ()=> {
+    var values = Prosumer.find(function(err, result){
+      if(err) return console.error(err);
+    });
+    return values;
+  },
+
+  insertProsumer: (args) => {
+    var newProsumer = new Prosumer({
+      id: args.id,
+      buffer: args.buffer,
+      wind: args.wind,
+      consumption: args.consumption,
+      production: args.production,
+      ratio_excess: args.ratio_excess,
+      ratio_under: args.ratio_under,
+      online: args.online,
+      img_path: args.img_path
+    });
+    newProsumer.save(function(err, prosumer){
+      if (err) return console.error(err);
+    })
+    return newProsumer;
+  },
+
+  updateProsumer: (args) => {
+    values = Prosumer.findOne({ id: args.id });
+    console.log(typeof values);
+    values.buffer = args.buffer
+    values.save(function(err, prosumer){
+      if (err) return console.error(err);
+    })
   }
-  ,
-    insertPerson: (args) => {
-      var pep = new Model({user_id: args.user_id});
-      pep.save(function(err, person){
-        if (err) return console.error(err);
-      })
-    }
 };
+
  
 var app = express();
 app.use('/graphql', graphqlHTTP({
