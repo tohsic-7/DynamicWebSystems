@@ -4,40 +4,29 @@ var { buildSchema, GraphQLObjectType } = require('graphql');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 
+//-------Models---------
+var Prosumer = require('./models/prosumer');
+var Consumer = require('./models/consumer');
+var Manager = require('./models/manager');
+
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
-
-var peopleSchema = new mongoose.Schema(
-  {
-    user_id: String
-  }
-);
-
-var Model = mongoose.model("model",peopleSchema, "prosumer");
-
-
-const PersonType = new GraphQLObjectType({
-    name: "Person",
-    fields: {
-      user_id: {type: String}
-    }
-});
-
 
 
 // Construct a schema, using GraphQL schema language
 var schema = buildSchema(`
   type Query {
     hello: String
-    getPeople: [Person]
+    getConsumers: [Consumer]
   }
 
-  type Person{
-    user_id: String
+  type Consumer{
+    id: Int,
+    consumption: Int
 }
 
 type Mutation{
-  insertPerson(user_id: String):Person
+  insertConsumer(id: Int, consumption: Int):Consumer
 }
 `);
  
@@ -46,16 +35,18 @@ var root = {
   hello: () => { 
     return 'Hejsan';
   },
-  getPeople: ()=> {
-    values = dbo.collection('people').find().toArray().then(res => { return res });
+  getConsumers: ()=> {
+    values = Consumer.find(function(err, result){
+      result.forEach(element => console.log(element.consumption));
+    });
     return values;
   }
   ,
-    insertPerson: (args) => {
-      var pep = new Model({user_id: args.user_id});
-      pep.save(function(err, person){
+    insertConsumer: (args) => {
+      var consumer = new Consumer({id: args.id, consumption: args.consumption});
+      consumer.save(function(err, result){
         if (err) return console.error(err);
-      })
+      });
     }
 };
  
