@@ -19,6 +19,7 @@ var schema = buildSchema(`
     hello: String
     getOneProsumer(id: Int): Prosumer
     getProsumers: [Prosumer]
+    getOneConsumer(id: Int): Consumer
     getConsumers: [Consumer]
   }
 
@@ -91,6 +92,13 @@ var root = {
   getConsumers: ()=> {
     values = Consumer.find();
     console.log(values['data'])
+    return values;
+  },
+
+  getOneConsumer: (args)=> {
+    values = Consumer.findOne({ id: args.id });
+    console.log(values);
+  
     return values;
   },
 
