@@ -9,7 +9,7 @@ var Prosumer = require('./models/prosumer');
 var Consumer = require('./models/consumer');
 var Manager = require('./models/manager');
 
-//Connect mongoose to mongodb
+
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
 
 
@@ -32,18 +32,6 @@ var schema = buildSchema(`
     ratio_excess: Int,
     ratio_under: Int,
     online: Boolean,
-    img_path: String
-  }
-
-  type Manager{
-    id: Int,
-    buffer: Int,
-    consumption: Int,
-    production: Int,
-    ratio: Int,
-    status: Boolean,
-    demand: Int,
-    price: Int,
     img_path: String
   }
 
@@ -95,11 +83,8 @@ var root = {
   hello: () => { 
     return 'Hejsan';
   },
-
-  // Consumer query resolvers
   getConsumers: ()=> {
     values = Consumer.find();
-    console.log(values['data'])
     return values;
   },
 
@@ -125,7 +110,6 @@ var root = {
   
     return values;
   },
-
   getProsumers: ()=> {
     var values = Prosumer.find(function(err, result){
       if(err) return console.error(err);
@@ -133,7 +117,6 @@ var root = {
     return values;
   },
 
-    // Prosumer mutation resolvers
   insertProsumer: (args) => {
     var newProsumer = new Prosumer({
       id: args.id,
@@ -160,15 +143,16 @@ var root = {
       if (err) return console.error(err);
     })
   },
-
-  //Manager query resolvers
-
-  //Manager mutation resolvers
+  
+  insertConsumer: (args) => {
+    var consumer = new Consumer({id: args.id, consumption: args.consumption});
+    consumer.save(function(err, result){
+      if (err) return console.error(err);
+    });
+  }
 };
 
  
-
-// Server setup
 var app = express();
 app.use('/graphql', graphqlHTTP({
   schema: schema,
