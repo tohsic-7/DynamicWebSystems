@@ -19,6 +19,7 @@ var schema = buildSchema(`
     hello: String
     getOneProsumer(id: Int): Prosumer
     getProsumers: [Prosumer]
+    getOneConsumer(id: Int): Consumer
     getConsumers: [Consumer]
   }
 
@@ -78,6 +79,23 @@ var root = {
     values = Consumer.find();
     return values;
   },
+
+  getOneConsumer: (args)=> {
+    values = Consumer.findOne({ id: args.id });
+    console.log(values);
+  
+    return values;
+  },
+
+  // Consumer mutation resolvers
+  insertConsumer: (args) => {
+    var consumer = new Consumer({id: args.id, consumption: args.consumption});
+    consumer.save(function(err, result){
+      if (err) return console.error(err);
+    });
+  },
+
+  // Prosumer query resolvers
   getOneProsumer: (args)=> {
     values = Prosumer.findOne({ id: args.id });
     console.log(values);
