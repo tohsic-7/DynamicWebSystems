@@ -72,7 +72,7 @@ type Mutation{
   updateConsumer(
     id: Int,
     consumption: Int
-  ): 
+  ) :Consumer
   
 }
 
