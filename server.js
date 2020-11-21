@@ -8,9 +8,10 @@ var url = "mongodb://localhost:27017/grid";
 var Prosumer = require('./models/prosumer');
 var Consumer = require('./models/consumer');
 var Manager = require('./models/manager');
+const { findOneAndUpdate } = require('./models/prosumer');
 
 
-mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true});
+mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
 
 
 // Construct a schema, using GraphQL schema language
@@ -73,16 +74,16 @@ type Mutation{
     id: Int,
     consumption: Int
   ) :Consumer
-  
+
+  deleteConsumer(
+    id: Int
+  ): Boolean
 }
 
 `);
  
 // The root provides a resolver function for each API endpoint
 var root = {
-  hello: () => { 
-    return 'Hejsan';
-  },
   getConsumers: ()=> {
     values = Consumer.find();
     return values;
@@ -90,24 +91,52 @@ var root = {
 
   getOneConsumer: (args)=> {
     values = Consumer.findOne({ id: args.id });
-    console.log(values);
-  
     return values;
   },
 
   // Consumer mutation resolvers
   insertConsumer: (args) => {
-    var consumer = new Consumer({id: args.id, consumption: args.consumption});
-    consumer.save(function(err, result){
-      if (err) return console.error(err);
+    var newConsumer = new Consumer({
+      id: args.id, 
+      consumption: args.consumption
     });
+
+    newConsumer.save(function(err, result){
+      if (err) return console.error(err);
+    })
+
+    return newConsumer;
+  },
+
+  updateConsumer: (args)=> {
+    var filter = {id: args.id};
+    var update = {
+      id: args.id,
+      consumption: args.consumption
+    };
+
+    for(var obj in update){
+      if(update[obj] === null || update[obj] === undefined){
+        delete update[obj];
+      }
+    }
+
+    var values = Consumer.findOneAndUpdate(filter, update, {new:true}, function(err, res){
+      if (err) return console.log(err);
+    });
+    return values;
+  },
+
+  deleteConsumer: (args)=> {
+    Consumer.deleteOne({id: args.id},function(err, res){
+      if (err) return console.log(err);
+    });
+    return true;
   },
 
   // Prosumer query resolvers
   getOneProsumer: (args)=> {
     values = Prosumer.findOne({ id: args.id });
-    console.log(values);
-  
     return values;
   },
   getProsumers: ()=> {
@@ -143,13 +172,6 @@ var root = {
       if (err) return console.error(err);
     })
   },
-  
-  insertConsumer: (args) => {
-    var consumer = new Consumer({id: args.id, consumption: args.consumption});
-    consumer.save(function(err, result){
-      if (err) return console.error(err);
-    });
-  }
 };
 
  
