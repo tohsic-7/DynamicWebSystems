@@ -9,6 +9,7 @@ var Prosumer = require('./models/prosumer');
 var Consumer = require('./models/consumer');
 var Manager = require('./models/manager');
 const { findOneAndUpdate } = require('./models/prosumer');
+const prosumer = require('./models/prosumer');
 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
@@ -24,10 +25,13 @@ var schema = buildSchema(`
     getManagers: [Manager]
     getOneConsumer(id: Int): Consumer
     getConsumers: [Consumer]
+    loginProsumer(username:String, password:String): Prosumer
   }
 
   type Prosumer{
     id: Int,
+    username: String,
+    password: String,
     buffer: Int,
     wind: Int,
     consumption: Int,
@@ -58,6 +62,8 @@ var schema = buildSchema(`
 type Mutation{
   insertProsumer(
     id: Int,
+    username: String,
+    password: String,
     buffer: Int,
     wind: Int,
     consumption: Int,
@@ -67,7 +73,7 @@ type Mutation{
     online: Boolean,
     img_path: String):Prosumer
   
-  deleteProsumer(id:Int!): Prosumer
+  deleteProsumer(id:Int!): Boolean
 
   updateProsumer(
     id: Int,
@@ -91,7 +97,7 @@ type Mutation{
     price: Int,
     img_path: String): Manager
   
-  deleteManager(id:Int!): Manager
+  deleteManager(id:Int!): Boolean
 
   updateManager(
     id: Int,
@@ -186,10 +192,25 @@ var root = {
     });
     return values;
   },
+
+  loginProsumer: (args) => {
+    loggedInprosumer = Prosumer.findOne({ username: args.username }, function(err, prosumer){
+        if(err) console.error(err);
+
+        prosumer.comparePassword(args.password, function(err, isMatch) {
+          if (err) throw err;
+          console.log('passwords123:', isMatch);
+        })
+    });
+    return loggedInprosumer;
+  },
+
   //Prosumer mutation resolvers
   insertProsumer: (args) => {
     var newProsumer = new Prosumer({
       id: args.id,
+      username: args.username,
+      password: args.password,
       buffer: args.buffer,
       wind: args.wind,
       consumption: args.consumption,
@@ -210,7 +231,7 @@ var root = {
     deadProsumer = Prosumer.deleteOne(filter, function(err){
       if (err) return console.error(err);
     });
-    return deadProsumer;
+    return true;
   },
 
   updateProsumer: (args) => {
@@ -274,7 +295,7 @@ var root = {
     deadManager = Manager.deleteOne(filter, function(err){
       if (err) return console.error(err);
     });
-    return deadManager;
+    return true;
   },
 
   updateManager: (args) => {
