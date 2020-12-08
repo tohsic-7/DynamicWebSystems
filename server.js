@@ -2,6 +2,7 @@ var express = require('express');
 var { graphqlHTTP } = require('express-graphql');
 const graphqlSchema = require('./simulator/graphql/schema/index')
 const graphqlResolver = require('./simulator/graphql/resolvers/index')
+const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 
@@ -14,6 +15,8 @@ const prosumer = require('./models/prosumer');
 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
+
+var app = express();
  
 // The root provides a resolver function for each API endpoint
 var root = {
@@ -22,9 +25,19 @@ var root = {
 
   
 };
+app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // server setup
-var app = express();
 app.use('/graphql', graphqlHTTP({
   schema: graphqlSchema,
   rootValue: graphqlResolver,

@@ -1,0 +1,16 @@
+.form-container .col-6{
+  margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
+
+.auth-container{
+  padding-top: 10rem;
+  display:flex;
+  justify-content: center;
+}
+
+.auth-form{
+  align-self: center;
+}

@@ -5,7 +5,7 @@ const Manager = require("../../../models/manager");
 
 
 function getActiveAttributes(args){
-    // Set all prosmanagerumer attributes regardless if they're null/undefined
+    // Set all manager attributes regardless if they're null/undefined
     activeAttributes = {
         username: args.username,
         password: args.password,
