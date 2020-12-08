@@ -5,23 +5,8 @@ const graphqlResolver = require('./simulator/graphql/resolvers/index')
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 
-//-------Models---------
-var Prosumer = require('./models/prosumer');
-var Consumer = require('./models/consumer');
-var Manager = require('./models/manager');
-const { findOneAndUpdate } = require('./models/prosumer');
-const prosumer = require('./models/prosumer');
-
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
- 
-// The root provides a resolver function for each API endpoint
-var root = {
-
-  
-
-  
-};
 
 // server setup
 var app = express();

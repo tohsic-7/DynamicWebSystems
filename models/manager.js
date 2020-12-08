@@ -8,7 +8,7 @@ var managerSchema = new Schema({
     consumption: {type: Number, default: 0},
     production: {type: Number, default: 0},
     ratio:{type: Number, default: 0},
-    status: Boolean,
+    status: {type: String, default: "stopped"},
     demand: {type: Number, default: 0},
     price: {type: Number, default: 0},
     img_path: String

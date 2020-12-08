@@ -10,12 +10,14 @@ function getActiveAttributes(args){
         username: args.username,
         password: args.password,
         buffer: args.buffer,
+        buffer_size: args.buffer_size,
         wind: args.wind,
         consumption: args.consumption,
         production: args.production,
         ratio_excess: args.ratio_excess,
         ratio_under: args.ratio_under,
         online: args.online,
+        blackout: args.blackout,
         img_path: args.img_path
     }
     // Delete all attributes which are not set for this update

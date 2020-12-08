@@ -8,6 +8,7 @@ type Prosumer{
   username: String!,
   password: String!,
   buffer: Int,
+  buffer_size: Int!,
   wind: Int,
   consumption: Int,
   production: Int,
@@ -19,7 +20,8 @@ type Prosumer{
 
 type Consumer{
   _id: ID!,
-  consumption: Int
+  consumption: Int,
+  blackout: Boolean
 }
 
 type Manager{
@@ -29,7 +31,7 @@ type Manager{
   buffer: Int,
   consumption: Int,
   production: Int,
-  status: Boolean,
+  status: String,
   ratio: Int,
   demand: Int,
   price: Int,
@@ -59,12 +61,14 @@ type RootMutation{
         username: String!,
         password: String!,
         buffer: Int,
+        buffer_size: Int!,
         wind: Int,
         consumption: Int,
         production: Int,
         ratio_excess: Int,
         ratio_under: Int,
         online: Boolean,
+        blackout: Boolean,
         img_path: String
     ):Prosumer!
 
@@ -73,12 +77,14 @@ type RootMutation{
     updateProsumer(
         _id: ID!,
         buffer: Int,
+        buffer_size: Int,
         wind: Int,
         consumption: Int,
         production: Int,
         ratio_excess: Int,
         ratio_under: Int,
         online: Boolean,
+        blackout: Boolean,
         img_path: String
     ):Prosumer
 
@@ -88,7 +94,7 @@ type RootMutation{
         buffer: Int,
         consumption: Int,
         production: Int,
-        status: Boolean,
+        status: String,
         ratio: Int,
         demand: Int,
         price: Int,
@@ -102,7 +108,7 @@ type RootMutation{
         buffer: Int,
         consumption: Int,
         production: Int,
-        status: Boolean,
+        status: String,
         ratio: Int,
         demand: Int,
         price: Int,
@@ -110,12 +116,14 @@ type RootMutation{
     ):Manager
 
     insertConsumer(
-        consumption: Int
+        consumption: Int,
+        blackout: Boolean
     ):Consumer
 
     updateConsumer(
         _id: ID!,
-        consumption: Int
+        consumption: Int,
+        blackout: Boolean
     ) :Consumer
 
     deleteConsumer(

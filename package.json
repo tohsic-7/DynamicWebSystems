@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "devStart": "nodemon --verbose server.js localhost 4000"
+    "devStart": "nodemon server.js localhost 4000",
+    "simulator": "nodemon simulator.js"
   },
   "repository": {
     "type": "git",

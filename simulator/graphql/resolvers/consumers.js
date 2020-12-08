@@ -1,6 +1,21 @@
 const Consumer = require("../../../models/consumer");
 
+function getActiveAttributes(args){
+    // Set all prosumer attributes regardless if they're null/undefined
+    activeAttributes = {
+        consumption: args.consumption,
+        blackout: args.blackout,
+    }
+    // Delete all attributes which are not set for this update
+    // such that only the ones that are set remain
+    for(var attribute in activeAttributes){
+        if (activeAttributes[attribute] === null || activeAttributes[attribute] === undefined) {
+            delete activeAttributes[attribute];
+        }
+    }
 
+    return activeAttributes;
+}
 
 module.exports = {
     getConsumers: async ()=> {
@@ -27,13 +42,11 @@ module.exports = {
     // Consumer mutation resolvers
     insertConsumer: async (args) => {
         try {
-            const consumer = new Consumer({
-              consumption: args.consumption
-            });
+            let attributes = getActiveAttributes(args);
+            const newConsumer = await new Consumer(attributes);
+            newConsumer.save();
       
-            const result = await consumer.save();
-      
-            return { ...result._doc, _id: result.id };
+            return newConsumer;
           } catch (err) {
             throw err;
           }
@@ -41,7 +54,8 @@ module.exports = {
 
     updateConsumer: async (args)=> {
         try{
-            const updatedConsumer = await Consumer.findOneAndUpdate({_id: args._id}, {consumption: args.consumption}, {new:true})
+            let attributes = getActiveAttributes(args);
+            const updatedConsumer = await Consumer.findOneAndUpdate({_id: args._id}, attributes, {new:true})
             return updatedConsumer;
         } catch (err){
             throw err;
