@@ -9,19 +9,19 @@ import React, { Component } from 'react';
  */
 
 class AuthPage extends Component {
+    state = {
+        isLogin: true
+    };
     constructor(props) {
     super(props);
     this.usernameEl = React.createRef();
     this.passwordEl = React.createRef();
     this.role = React.createRef();
-    this.state = {
-        isLogin: true
-      };
     }
     
     switchModeHandler = () => {
-    this.setState(prevState => {
-        return { isLogin: !prevState.isLogin };
+        this.setState(prevState => {
+            return { isLogin: !prevState.isLogin };
         });
     };
 
@@ -30,6 +30,7 @@ class AuthPage extends Component {
         const username = this.usernameEl.current.value;
         const password = this.passwordEl.current.value;
         const user = this.role.current.value;
+        console.log(this.state.isLogin);
 
         if (username.trim().length === 0 || password.trim().length === 0) {
             return;
@@ -40,6 +41,7 @@ class AuthPage extends Component {
         };
 
         if (!this.state.isLogin) {
+            console.log("OKOK")
             requestBody = {
             query: `
                 mutation {
@@ -79,7 +81,7 @@ class AuthPage extends Component {
                     `
             }
         }
-
+        console.log(requestBody.query);
         fetch('http://localhost:4000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),

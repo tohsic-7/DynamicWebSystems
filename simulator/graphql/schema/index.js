@@ -61,7 +61,7 @@ type RootMutation{
         username: String!,
         password: String!,
         buffer: Int,
-        buffer_size: Int!,
+        buffer_size: Int,
         wind: Int,
         consumption: Int,
         production: Int,
