@@ -11,6 +11,7 @@ type Prosumer{
   buffer_size: Int!,
   wind: Int,
   consumption: Int,
+  consumed_from_grid: Int,
   production: Int,
   ratio_excess: Int,
   ratio_under: Int,
@@ -29,6 +30,7 @@ type Manager{
   username: String!,
   password: String!,
   buffer: Int,
+  buffer_size: Int!,
   consumption: Int,
   production: Int,
   status: String,
@@ -65,6 +67,7 @@ type RootMutation{
         buffer_size: Int,
         wind: Int,
         consumption: Int,
+        consumed_from_grid: Int,
         production: Int,
         ratio_excess: Int,
         ratio_under: Int,
@@ -76,11 +79,13 @@ type RootMutation{
     deleteProsumer(_id:ID!): Boolean
 
     updateProsumer(
-        _id: ID!,
+      console.log("grid consume: ", consumed_from_grid)
+      _id: ID!,
         buffer: Int,
         buffer_size: Int,
         wind: Int,
         consumption: Int,
+        consumed_from_grid: Int,
         production: Int,
         ratio_excess: Int,
         ratio_under: Int,
@@ -93,6 +98,7 @@ type RootMutation{
         username: String!,
         password: String!,
         buffer: Int,
+        buffer_size: Int!,
         consumption: Int,
         production: Int,
         status: String,
@@ -107,6 +113,7 @@ type RootMutation{
     updateManager(
         _id: ID!,
         buffer: Int,
+        buffer_size: Int,
         consumption: Int,
         production: Int,
         status: String,

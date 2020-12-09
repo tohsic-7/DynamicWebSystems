@@ -20,9 +20,6 @@ var wind_dev_day = 0.5;
 //Wind turbine specs
 var sweap_area = 6;
 var air_density = 1.23
-var power_coef = 0.4
-
-var true_holder = true;
 
 var startup_timer = 0;
 
@@ -33,108 +30,22 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-async function testRun(){
-            console.log("hej");
-            var prosumers = await resolvers.getProsumers();
-            console.log(prosumers);
-            console.log("cyka");
-            console.log("daily wind: " + wind_mean_day);
-
-            // "simulated hour of the system"
-
-            var grid_electricity = 0;
-            var grid_consumption = 0;
-
-            //calculate prosumer impact on the grid
-            for(pro of prosumers){
-                // update wind
-
-                var new_wind = updateWind();
-
-                // calculate produced electricity
-
-                var produced = calcProduction(new_wind);
-
-                // update consumption
-
-                var consumed = updateConsumption();
-
-                // calculate electricity to battery and to grid if excessive production
-
-                var excess = produced - consumed;
-
-                console.log("production-consumption: " + excess);
-
-                if(excess >= 0){
-
-                    var electricity_to_battery = pro.buffer + excess * pro.ratio_excess/100; //The new amount of electricity in the battery
-
-                    //add functionality if battery is at maximum capacity
-
-                    if(electricity_to_battery>pro.buffer_size){ //Check if new amount is larger than maximum and if so send the rest to the grid
-                        var electricity_battery = pro.buffer_size;
-                        grid_electricity += electricity_to_battery - pro.buffer_size;
-                    } else{
-                        var electricity_battery = electricity_to_battery;
-                    }
-
-                    grid_electricity +=  excess * (1 - pro.ratio_excess/100);
-
-                }
-                // calculate amount of electricity taken from battery and grid if under production
-                else{
-
-                    //add functionality if battery is 0
-                    var electricity_to_battery = pro.buffer - (consumed * pro.ratio_under/100);
-                    
-                    //If electricity to battery is less than zero set buffer to 0 and the rest goes as grid consumption.
-                    if (electricity_to_battery < 0){
-                        
-                        var electricity_battery = 0;
-                        grid_consumption += 0 - electricity_to_battery
-                    } else{
-                        var electricity_battery = electricity_to_battery
-                    }
-
-                    grid_consumption += consumed * (1 - pro.ratio_under/100);
-                }
-
-                console.log("New buffer: "+ electricity_battery);
-
-                await resolvers.updateProsumer({_id: pro._id, wind: new_wind , buffer: electricity_battery, production: produced, consumption: consumed})
-            }
-
-            //caluclate consumer impact on the grid
-
-            var consumers = await resolvers.getConsumers();
-
-            for(con of consumers){
-                var consumed = updateConsumption();
-                grid_consumption += consumed;
-
-                await resolvers.updateConsumer({_id: con._id, consumption: consumed})
-            }
-            console.log(grid_electricity);
-            console.log(grid_consumption);
-        }
-
 async function run(){
-    while(true_holder){
+    while(true){
 
         updateWindDay();
 
         for(i=0; i<24; i++){
 
-            await sleep(1000);
+            await sleep(3000);
             var prosumers = await resolvers.getProsumers();
-            console.log(wind_mean_day);
 
             // "simulated hour of the system"
 
             var grid_electricity = 0;
             var grid_consumption = 0;
 
-            //calculate prosumer impact on the grid
+            // ------------------------- calculate prosumer impact on the grid
             for(pro of prosumers){
 
                 // update wind
@@ -149,16 +60,18 @@ async function run(){
 
                 var consumed = updateConsumption();
 
+
                 // calculate electricity to battery and to grid if excessive production
 
                 var excess = produced - consumed;
                 if(excess >= 0){
+                    var consumed_from_grid = 0
 
                     var electricity_to_battery = pro.buffer + excess * pro.ratio_excess/100; //The new amount of electricity in the battery
 
-                    //add functionality if battery is at maximum capacity
 
-                    if(electricity_to_battery>pro.buffer_size){ //Check if new amount is larger than maximum and if so send the rest to the grid
+                    //Check if new amount is larger than maximum and if so send the rest to the grid
+                    if(electricity_to_battery>pro.buffer_size){ 
                         var electricity_battery = pro.buffer_size;
                         grid_electricity += electricity_to_battery - pro.buffer_size;
                     } else{
@@ -168,32 +81,35 @@ async function run(){
                     grid_electricity +=  excess * (1 - pro.ratio_excess/100);
 
                 }
+
                 // calculate amount of electricity taken from battery and grid if under production
                 else{
-
                     //add functionality if battery is 0
-                    var electricity_to_battery = pro.buffer - (consumed * pro.ratio_under/100);
+                    var difference = consumed - produced;
+                    var consumed_from_grid = difference * (1-(pro.ratio_under/100));
+
+                    var electricity_to_battery = pro.buffer - (difference * pro.ratio_under/100);
                     
                     //If electricity to battery is less than zero set buffer to 0 and the rest goes as grid consumption.
                     if (electricity_to_battery < 0){
                         
-                        var electricity_battery = 0;
-                        grid_consumption += 0 - electricity_to_battery
+                        consumed_from_grid += 0 - electricity_to_battery;
+                        var electricity_battery = 0; 
                     }
 
                     else{
-                        var electricity_battery = electricity_to_battery
+                        var electricity_battery = electricity_to_battery;
                     }
-
-                    grid_consumption += consumed * (1 - pro.ratio_under/100);
+                    grid_consumption += consumed_from_grid
                 }
 
 
 
-                await resolvers.updateProsumer({_id: pro._id, wind: new_wind , buffer: electricity_battery, production: produced, consumption: consumed})
+
+                await resolvers.updateProsumer({_id: pro._id, wind: new_wind , buffer: electricity_battery, production: produced, consumption: consumed, consumed_from_grid: consumed_from_grid});
             }
 
-            //caluclate consumer impact on the grid
+            // ---------------------------- caluclate consumer impact on the grid
 
             var consumers = await resolvers.getConsumers();
 
@@ -204,60 +120,85 @@ async function run(){
                 await resolvers.updateConsumer({_id: con._id, consumption: consumed})
             }
 
-            // calculate manager / coal plant impact on grid
+            // ---------------------------- calculate manager / coal plant impact on grid
 
             var manager = await resolvers.getManagers();
 
             for (man of manager){
-                // if status running return maximum production from coal plant
+                // if status running return maximum production from coal plant and ratio to buffer
                 if (man.status == "running"){
                     var produced = coalProduction(10);
-                    console.log(produced);
+                    var new_buffer = man.buffer + produced * (man.ratio/100);
+                    if(new_buffer > man.buffer_size){
+                        new_buffer = man.buffer_size;
+                    }
+                    var produced = produced * (1-(man.ratio/100));
                 }
                 // if status is starting return increasing production over time
                 else if(man.status == "starting"){
                     var produced = coalProduction(startup_timer);
-                    console.log(coalProduction(startup_timer));
+                    var new_buffer = man.buffer + produced * (man.ratio/100);
+                    if(new_buffer > man.buffer_size){
+                        new_buffer = man.buffer_size;
+                    }
+                    var produced = produced * (1-(man.ratio/100));
                     startup_timer += 1;
                     if (startup_timer >= 10){
                         status = "running";
                         await resolvers.updateManager({_id: man._id, status: status});
                     }
                 }
+                //if status is stopped decreasing production over time
                 else if(man.status == "stopped"){
                     if(startup_timer>0){
                         startup_timer -= 1;
                         var produced = coalProduction(startup_timer);
-                    } else{
+                    }  else{
                         var produced = 0;
                     }
+                    
+                    var grid_require = grid_consumption - grid_electricity;
 
+                    // If grid is not getting enough electricity use buffer
+                    if(produced < grid_require){
+                        grid_require -= produced;
+                        if(man.buffer>0){
+                            if(grid_require > man.buffer){
+                                produced += man.buffer;
+                                var new_buffer = 0;
+                            } else{
+                                produced += grid_require;
+                                var new_buffer = man.buffer - grid_require;
+                            }
+
+                        }
+
+                    }
                 }
 
-                var consumption = calcProduction();
+                await resolvers.updateManager({
+                    _id: man._id,
+                    production: produced,
+                    buffer: new_buffer,
+                    demand: grid_consumption,
+                    price: calculatePrice(grid_consumption, wind_mean_day)});
 
-                // blackout scheisse
+
+                grid_electricity += produced;
+
+                
+
 
             }
 
-            grid_electricity += produced
+            //use electricity in grid to distribute to users.
             
             blackouts(grid_electricity);
             
 
-            console.log(grid_electricity);
-            console.log(grid_consumption);
-
-            console.log("Price: ", calculatePrice(grid_consumption, wind_mean_day));
-
         }
     }
 }   
-
-
-
-
-
 
 
 // calculate electricity produced from windmill
@@ -323,16 +264,15 @@ async function blackouts(grid_electricity){
     for(i=0; i<(prosumers.length + consumers.length); i++){
         if(((Math.random() == 0) && p_index < shuffled_prosumers.length) || c_index >= shuffled_consumers.length){
             var prosumer = shuffled_prosumers[p_index];
-            console.log(prosumer);
             p_index += 1;
 
             // If prosumer production is more than consumption no blackout
-            if(prosumer.production - prosumer.consumption>0){
+            if(prosumer.production - prosumer.consumed_from_grid>0){
                 blackout_bool = false;
             }
             // If there is enough electricity on the grid for prosumer consumption no blackout. If not blackout
-            else if((grid_electricity - (prosumer.consumption - prosumer.production)  * (1 - pro.ratio_under/100))>=0){
-                grid_electricity -= prosumer.consumption;
+            else if((grid_electricity - prosumer.consumed_from_grid) >=0 ){
+                grid_electricity -= prosumer.consumed_from_grid;
                 blackout_bool = false;
             } else{
                 blackout_bool = true;

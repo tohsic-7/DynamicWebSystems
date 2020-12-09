@@ -10,6 +10,7 @@ function getActiveAttributes(args){
         username: args.username,
         password: args.password,
         buffer: args.buffer,
+        buffer_size: args.buffer_size,
         consumption: args.consumption,
         production: args.production,
         status: args.status,
