@@ -13,6 +13,7 @@ function getActiveAttributes(args){
         buffer_size: args.buffer_size,
         wind: args.wind,
         consumption: args.consumption,
+        consumed_from_grid: args.consumed_from_grid,
         production: args.production,
         ratio_excess: args.ratio_excess,
         ratio_under: args.ratio_under,

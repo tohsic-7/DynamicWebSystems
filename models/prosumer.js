@@ -10,6 +10,7 @@ var prosumerSchema = new Schema({
     buffer_size: {type: Number, required: true},
     wind: {type: Number, default: 0},
     consumption: {type: Number, default: 0},
+    consumed_from_grid: {type: Number, default: 0},
     production: {type: Number, default: 0},
     ratio_excess: {type: Number, default: 50},
     ratio_under: {type: Number, default: 50},
