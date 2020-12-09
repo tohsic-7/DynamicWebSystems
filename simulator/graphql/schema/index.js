@@ -40,6 +40,7 @@ type Manager{
 
 type AuthData {
   userId: ID!
+  userType: Int!
   token: String!
   tokenExpiration: Int!
 }

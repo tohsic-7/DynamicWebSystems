@@ -73,7 +73,7 @@ module.exports = {
                 expiresIn: '1h'
             }
         );
-        return { userId: prosumer._id, token: token, tokenExpiration: 1 };
+        return { userId: prosumer._id, userType: 0, token: token, tokenExpiration: 1 };
     },
 
     insertProsumer: async (args) => {

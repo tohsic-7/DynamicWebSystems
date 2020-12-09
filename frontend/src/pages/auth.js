@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import AuthContext from '../context/auth-context';
+
 /**
  * TODO:
  * clearify that you can't sign up as manager (make role selection invisible)
@@ -12,6 +14,9 @@ class AuthPage extends Component {
     state = {
         isLogin: true
     };
+
+    static contextType = AuthContext;
+
     constructor(props) {
     super(props);
     this.usernameEl = React.createRef();
@@ -30,7 +35,6 @@ class AuthPage extends Component {
         const username = this.usernameEl.current.value;
         const password = this.passwordEl.current.value;
         const user = this.role.current.value;
-        console.log(this.state.isLogin);
 
         if (username.trim().length === 0 || password.trim().length === 0) {
             return;
@@ -41,7 +45,6 @@ class AuthPage extends Component {
         };
 
         if (!this.state.isLogin) {
-            console.log("OKOK")
             requestBody = {
             query: `
                 mutation {
@@ -54,35 +57,20 @@ class AuthPage extends Component {
             };
         }
 
-        else if(this.state.isLogin && user=== 'Manager'){
+        else if(this.state.isLogin && user === 'Manager'){
             requestBody = {
                 query: `
                     mutation {
                         loginManager(username: "${username}", password: "${password}") {
                             userId
+                            userType
                             token
                             tokenExpiration
                         }
                     }
                     `
             }
-        }
-
-        else if(this.state.isLogin && user === 'Prosumer'){
-            requestBody = {
-                query: `
-                    mutation {
-                        loginProsumer(username: "${username}", password: "${password}") {
-                            userId
-                            token
-                            tokenExpiration
-                        }
-                    }
-                    `
-            }
-        }
-        console.log(requestBody.query);
-        fetch('http://localhost:4000/graphql', {
+            fetch('http://localhost:4000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
@@ -96,11 +84,60 @@ class AuthPage extends Component {
                 return res.json();
             })
             .then(resData => {
-                console.log(resData);
+                if(resData.data.loginManager.token){
+                    this.context.login(
+                        resData.data.loginManager.userId,
+                        resData.data.loginManager.userType,
+                        resData.data.loginManager.token,
+                        resData.data.loginManager.tokenExpiration
+                    );
+                }
                 })
                 .catch(err => {
                 console.log(err);
             });
+        }
+
+        else if(this.state.isLogin && user === 'Prosumer'){
+            requestBody = {
+                query: `
+                    mutation {
+                        loginProsumer(username: "${username}", password: "${password}") {
+                            userId
+                            userType
+                            token
+                            tokenExpiration
+                        }
+                    }
+                    `
+            }
+            fetch('http://localhost:4000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed!');
+                }
+                return res.json();
+            })
+            .then(resData => {
+                if(resData.data.loginProsumer.token){
+                    this.context.login(
+                        resData.data.loginProsumer.userId,
+                        resData.data.loginProsumer.userType,
+                        resData.data.loginProsumer.token,
+                        resData.data.loginProsumer.tokenExpiration
+                    );
+                }
+                })
+                .catch(err => {
+                console.log(err);
+            });
+        }
     };
 
   render() {

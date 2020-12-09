@@ -70,7 +70,7 @@ module.exports = {
                 expiresIn: '1h'
             }
         );
-        return { userId: manager._id, token: token, tokenExpiration: 1 };
+        return { userId: manager._id, userType: 1, token: token, tokenExpiration: 1 };
     },
 
     insertManager: async (args) => {
