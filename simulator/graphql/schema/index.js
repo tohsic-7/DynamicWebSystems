@@ -7,12 +7,12 @@ type Prosumer{
   _id: ID!,
   username: String!,
   password: String!,
-  buffer: Int,
-  buffer_size: Int!,
-  wind: Int,
-  consumption: Int,
-  consumed_from_grid: Int,
-  production: Int,
+  buffer: Float,
+  buffer_size: Float!,
+  wind: Float,
+  consumption: Float,
+  consumed_from_grid: Float,
+  production: Float,
   ratio_excess: Int,
   ratio_under: Int,
   online: Boolean,
@@ -21,7 +21,7 @@ type Prosumer{
 
 type Consumer{
   _id: ID!,
-  consumption: Int,
+  consumption: Float,
   blackout: Boolean
 }
 
@@ -29,14 +29,14 @@ type Manager{
   _id: ID!,
   username: String!,
   password: String!,
-  buffer: Int,
-  buffer_size: Int!,
-  consumption: Int,
-  production: Int,
+  buffer: Float,
+  buffer_size: Float!,
+  consumption: Float,
+  production: Float,
   status: String,
   ratio: Int,
-  demand: Int,
-  price: Int,
+  demand: Float,
+  price: Float,
   img_path: String
 }
 
@@ -63,12 +63,12 @@ type RootMutation{
     insertProsumer(
         username: String!,
         password: String!,
-        buffer: Int,
-        buffer_size: Int,
-        wind: Int,
-        consumption: Int,
-        consumed_from_grid: Int,
-        production: Int,
+        buffer: Float,
+        buffer_size: Float,
+        wind: Float,
+        consumption: Float,
+        consumed_from_grid: Float,
+        production: Float,
         ratio_excess: Int,
         ratio_under: Int,
         online: Boolean,
@@ -79,14 +79,13 @@ type RootMutation{
     deleteProsumer(_id:ID!): Boolean
 
     updateProsumer(
-      console.log("grid consume: ", consumed_from_grid)
       _id: ID!,
-        buffer: Int,
-        buffer_size: Int,
-        wind: Int,
-        consumption: Int,
-        consumed_from_grid: Int,
-        production: Int,
+        buffer: Float,
+        buffer_size: Float,
+        wind: Float,
+        consumption: Float,
+        consumed_from_grid: Float,
+        production: Float,
         ratio_excess: Int,
         ratio_under: Int,
         online: Boolean,
@@ -97,14 +96,14 @@ type RootMutation{
     insertManager(
         username: String!,
         password: String!,
-        buffer: Int,
-        buffer_size: Int!,
-        consumption: Int,
-        production: Int,
+        buffer: Float,
+        buffer_size: Float!,
+        consumption: Float,
+        production: Float,
         status: String,
         ratio: Int,
-        demand: Int,
-        price: Int,
+        demand: Float,
+        price: Float,
         img_path: String
     ): Manager
 
@@ -112,25 +111,25 @@ type RootMutation{
 
     updateManager(
         _id: ID!,
-        buffer: Int,
-        buffer_size: Int,
-        consumption: Int,
-        production: Int,
+        buffer: Float,
+        buffer_size: Float,
+        consumption: Float,
+        production: Float,
         status: String,
         ratio: Int,
-        demand: Int,
-        price: Int,
+        demand: Float,
+        price: Float,
         img_path: String
     ):Manager
 
     insertConsumer(
-        consumption: Int,
+        consumption: Float,
         blackout: Boolean
     ):Consumer
 
     updateConsumer(
         _id: ID!,
-        consumption: Int,
+        consumption: Float,
         blackout: Boolean
     ) :Consumer
 
@@ -145,5 +144,3 @@ schema{
   }
 
 `);
-
-// TODO: Add authorization type
