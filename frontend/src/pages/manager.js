@@ -58,14 +58,14 @@ class ManagerPage extends Component {
 
     render(){
         return(
-            <div>
+            <div className="display-data-container">
                 <h1>MANAGER PAGE</h1>
-                <ul>
-                    <li>status:     {this.state.status}</li>
-                    <li>production:     {this.state.production}</li>
-                    <li>ratio:     {this.state.ratio}</li>
-                    <li>demand:     {this.state.demand}</li>
-                    <li>price:     {this.state.price}</li>
+                <ul className="list-group list-flash">
+                    <li className="list-group-item">status:     {this.state.status}</li>
+                    <li className="list-group-item">production:     {this.state.production}</li>
+                    <li className="list-group-item">ratio:     {this.state.ratio}</li>
+                    <li className="list-group-item">demand:     {this.state.demand}</li>
+                    <li className="list-group-item">price:     {this.state.price}</li>
                 </ul>
             </div>
         );

@@ -14,3 +14,14 @@
 .auth-form{
   align-self: center;
 }
+
+.display-data-container{
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.display-data{
+  display: flex;
+  justify-content: center;
+}
