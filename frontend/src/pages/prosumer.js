@@ -70,14 +70,14 @@ class ProsumerPage extends Component {
 
     render(){
         return(
-            <div>
+            <div className="">
                 <h1>Prosumer PAGE</h1>
-                <ul>
-                    <li>Current wind speed: {this.state.wind} m/s</li>
-                    <li>Current production: {this.state.production} Wh</li>
-                    <li>Current consumption: {this.state.consumption} Wh</li>
-                    <li>Net production: {this.state.net_production} Wh</li>
-                    <li>Electricity in buffer: {this.state.buffer} Wh</li>
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item">Current wind speed: {this.state.wind} m/s</li>
+                    <li className="list-group-item">Current production: {this.state.production} Wh</li>
+                    <li className="list-group-item">Current consumption: {this.state.consumption} Wh</li>
+                    <li className="list-group-item">Net production: {this.state.net_production} Wh</li>
+                    <li className="list-group-item">Electricity in buffer: {this.state.buffer} Wh</li>
                 </ul>
             </div>
         );
