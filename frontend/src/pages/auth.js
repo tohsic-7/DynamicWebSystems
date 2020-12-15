@@ -163,7 +163,7 @@ class AuthPage extends Component {
                     </select>
                 </div>
                 <div className="form-actions">
-                    <button type="submit">Submit</button>
+                    <button className = "btn btn-primary" type="submit">Submit</button>
                     <button className = "btn btn-primary" type="button" onClick={this.switchModeHandler}>
                     Switch to {this.state.isLogin ? 'Signup' : 'Login'}
                     </button>

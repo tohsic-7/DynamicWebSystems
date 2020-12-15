@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
-import authContext from '../context/auth-context';
+import AuthContext from '../context/auth-context';
 
 class ManagerPage extends Component {
     state = {
-        wind: 0,
-        consumption: 0
+        status: '',
+        production: 0,
+        ratio: 0,
+        demand: 0,
+        price: 0
     };
+    static contextType = AuthContext;
 
-
-    constructor(props) {
-        super(props);
-        console.log(authContext.token);
+    componentDidMount(){
         this.updateValues();
-        }
-
+    }
     
     updateValues = () => {
         setInterval(() =>{
             let requestBody = {
                 query: `
                 {
-                    getOneProsumer(_id:"5fcf625d07a7dfb32bc0a194"){
-                        wind
-                        consumption
+                    getOneManager(_id:"${this.context.userId}"){
+                        status
+                        production
+                        ratio
+                        demand
+                        price
                     }
                 }
                     `
@@ -41,8 +44,11 @@ class ManagerPage extends Component {
                 return res.json();
             })
             .then(resData => {
-                this.setState({wind: resData.data.getOneProsumer.wind});
-                this.setState({consumption: resData.data.getOneProsumer.consumption});
+                this.setState({status: resData.data.getOneManager.status});
+                this.setState({production: resData.data.getOneManager.production});
+                this.setState({ratio: resData.data.getOneManager.ratio});
+                this.setState({demand: resData.data.getOneManager.demand});
+                this.setState({price: resData.data.getOneManager.price});
                 })
                 .catch(err => {
                 console.log(err);
@@ -55,12 +61,16 @@ class ManagerPage extends Component {
             <div>
                 <h1>MANAGER PAGE</h1>
                 <ul>
-                    <li>{this.state.wind}</li>
-                    <li>{this.state.consumption}</li>
+                    <li>status:     {this.state.status}</li>
+                    <li>production:     {this.state.production}</li>
+                    <li>ratio:     {this.state.ratio}</li>
+                    <li>demand:     {this.state.demand}</li>
+                    <li>price:     {this.state.price}</li>
                 </ul>
             </div>
         );
     }
+    
 }
 
 export default ManagerPage;
