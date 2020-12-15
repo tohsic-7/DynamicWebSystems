@@ -24,7 +24,7 @@ class App extends Component {
   };
 
   logout = () => {
-    this.setState({ token: null, userId: null });
+    this.setState({ userId: null, userType:null, token:null});
   };
 
 
@@ -43,12 +43,12 @@ class App extends Component {
           >
             <MainNavigation />
             <Switch>
-              {!this.state.token && <Redirect from="/" to="/auth" exact/>}
               {this.state.userType === 0 && <Redirect from="/auth" to="/prosumer" exact/>}
               {this.state.userType === 1 && <Redirect from="/auth" to="/manager" exact/>}
               {!this.state.token &&<Route path="/auth" component={AuthPage} />}
               {this.state.userType === 0 && <Route path="/prosumer" component={ProsumerPage} />}
               {this.state.userType === 1 && <Route path="/manager" component={ManagerPage} />}
+              {!this.state.token && <Redirect to="/auth" exact/>}
             </Switch>
           </AuthContext.Provider>
         </React.Fragment>

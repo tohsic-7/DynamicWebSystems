@@ -1,5 +1,5 @@
 .main-navigation {
-    position: fixed;
+    position: static;
     left: 0;
     top: 0;
     width: 100%;
