@@ -7,7 +7,8 @@ class ProsumerPage extends Component {
         production: 0,
         consumption: 0,
         net_production: 0,
-        buffer: 0
+        buffer: 0,
+        username: ""
 
     };
 
@@ -39,6 +40,7 @@ class ProsumerPage extends Component {
                     production
                     consumption
                     buffer
+                    username
                 }
             }
                 `
@@ -62,6 +64,7 @@ class ProsumerPage extends Component {
             this.setState({consumption: resData.data.getOneProsumer.consumption});
             this.setState({net_production: (resData.data.getOneProsumer.production - resData.data.getOneProsumer.consumption)});
             this.setState({buffer: resData.data.getOneProsumer.buffer});
+            this.setState({username: resData.data.getOneProsumer.username});
             })
             .catch(err => {
             console.log(err);
@@ -70,8 +73,10 @@ class ProsumerPage extends Component {
 
     render(){
         return(
-            <div className="">
+            <div className="display-data-container">
                 <h1>Prosumer PAGE</h1>
+                <h5>Welcome {this.state.username}!</h5>
+
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">Current wind speed: {this.state.wind} m/s</li>
                     <li className="list-group-item">Current production: {this.state.production} Wh</li>
