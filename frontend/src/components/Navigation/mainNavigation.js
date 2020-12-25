@@ -22,6 +22,7 @@ const mainNavigation = props => (
               {context.userType===0 && (
                 <li>
                     <NavLink to="/prosumer">Prosumer</NavLink>
+                    <NavLink to="/prosumer_controls">Controls</NavLink>
                 </li>
               )}
               {context.token && (

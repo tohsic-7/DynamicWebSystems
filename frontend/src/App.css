@@ -17,11 +17,12 @@
 
 .display-data-container{
   margin: auto;
-  width: 50%;
+  width: 40%;
   padding: 10px;
 }
 
 .display-data{
   display: flex;
+  margin:auto;
   justify-content: center;
 }
