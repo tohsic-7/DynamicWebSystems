@@ -15,9 +15,17 @@ const mainNavigation = props => (
           <nav className="main-navigation__items">
             <ul>
               {context.userType===1 && (
-                <li>
-                    <NavLink to="/manager">Manager</NavLink>
-                </li>
+                <React.Fragment>
+                    <li>
+                        <NavLink to="/manager">Manager</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/manage/users">Users</NavLink>
+                    </li>
+                    <li>
+                    <NavLink to="/manage/profile">Profile</NavLink>
+                    </li>
+                </React.Fragment>
               )}
               {context.userType===0 && (
                 <li>

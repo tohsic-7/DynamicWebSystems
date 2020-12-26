@@ -6,6 +6,9 @@ import MainNavigation from '../src/components/Navigation/mainNavigation'
 import AuthPage from './pages/auth';
 import ProsumerPage from './pages/prosumer';
 import ManagerPage from './pages/manager';
+import ManageUsers from './pages/Manager/manageUsers'
+import ManageProfile from './pages/Manager/manageProfile'
+
 import './App.css';
 
 class App extends Component {
@@ -43,12 +46,15 @@ class App extends Component {
           >
             <MainNavigation />
             <Switch>
+              {this.state.userType === 1 && <Route exact strict path="/manage/users" component={ManageUsers} />}
+              {this.state.userType === 1 && <Route exact strict path="/manage/profile" component={ManageProfile} />}
               {this.state.userType === 0 && <Redirect from="/auth" to="/prosumer" exact/>}
               {this.state.userType === 1 && <Redirect from="/auth" to="/manager" exact/>}
               {!this.state.token &&<Route path="/auth" component={AuthPage} />}
               {this.state.userType === 0 && <Route path="/prosumer" component={ProsumerPage} />}
               {this.state.userType === 1 && <Route path="/manager" component={ManagerPage} />}
-              {!this.state.token && <Redirect to="/auth" exact/>}
+              
+              {!this.state.token && <Redirect to="/auth" exact />}
             </Switch>
           </AuthContext.Provider>
         </React.Fragment>

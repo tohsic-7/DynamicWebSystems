@@ -70,7 +70,7 @@ class ProsumerPage extends Component {
 
     render(){
         return(
-            <div className="">
+            <div className="display-data-container">
                 <h1>Prosumer PAGE</h1>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">Current wind speed: {this.state.wind} m/s</li>
