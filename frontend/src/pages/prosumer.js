@@ -7,7 +7,8 @@ class ProsumerPage extends Component {
         production: 0,
         consumption: 0,
         net_production: 0,
-        buffer: 0
+        buffer: 0,
+        username: ""
 
     };
 
@@ -39,6 +40,7 @@ class ProsumerPage extends Component {
                     production
                     consumption
                     buffer
+                    username
                 }
             }
                 `
@@ -57,11 +59,12 @@ class ProsumerPage extends Component {
             return res.json();
         })
         .then(resData => {
-            this.setState({wind: resData.data.getOneProsumer.wind});
-            this.setState({production: resData.data.getOneProsumer.production});
-            this.setState({consumption: resData.data.getOneProsumer.consumption});
-            this.setState({net_production: (resData.data.getOneProsumer.production - resData.data.getOneProsumer.consumption)});
-            this.setState({buffer: resData.data.getOneProsumer.buffer});
+            this.setState({wind: resData.data.getOneProsumer.wind.toFixed(2)});
+            this.setState({production: resData.data.getOneProsumer.production.toFixed(2)});
+            this.setState({consumption: resData.data.getOneProsumer.consumption.toFixed(2)});
+            this.setState({net_production: (resData.data.getOneProsumer.production - resData.data.getOneProsumer.consumption).toFixed(2)});
+            this.setState({buffer: resData.data.getOneProsumer.buffer.toFixed(2)});
+            this.setState({username: resData.data.getOneProsumer.username});
             })
             .catch(err => {
             console.log(err);
@@ -71,13 +74,20 @@ class ProsumerPage extends Component {
     render(){
         return(
             <div className="display-data-container">
-                <h1>Prosumer PAGE</h1>
+                <h1>Prosumer page</h1>
+                <h5>Welcome {this.state.username}!</h5>
+
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">Current wind speed: {this.state.wind} m/s</li>
-                    <li className="list-group-item">Current production: {this.state.production} Wh</li>
-                    <li className="list-group-item">Current consumption: {this.state.consumption} Wh</li>
-                    <li className="list-group-item">Net production: {this.state.net_production} Wh</li>
-                    <li className="list-group-item">Electricity in buffer: {this.state.buffer} Wh</li>
+                    <li className="list-group-item">Current wind speed: 
+                    <br/>{this.state.wind} m/s</li>
+                    <li className="list-group-item">Current production: 
+                    <br/>{this.state.production} Wh</li>
+                    <li className="list-group-item">Current consumption: 
+                    <br/>{this.state.consumption} Wh</li>
+                    <li className="list-group-item">Net production:
+                    <br/> {this.state.net_production} Wh</li>
+                    <li className="list-group-item">Electricity in buffer: 
+                    <br/>{this.state.buffer} Wh</li>
                 </ul>
             </div>
         );
