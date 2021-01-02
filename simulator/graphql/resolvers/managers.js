@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { findOneAndUpdate } = require('../../../models/manager');
 
 const Manager = require("../../../models/manager");
 
@@ -82,7 +83,6 @@ module.exports = {
                 throw new Error('Manager already exists');
             }
             let attributes = await getActiveAttributes(args);
-            console.log(attributes.password)
             const hashedPassword = await bcrypt.hash(attributes.password, 12);
             attributes.password = hashedPassword;
 
@@ -110,9 +110,42 @@ module.exports = {
     updateManager: async (args) => {
         try{
             let attributes = getActiveAttributes(args);
-            updatedManager = await Manager.findOneAndUpdate({_id: args._id}, attributes, {new:true})
+            updatedManager = await Manager.findOneAndUpdate({_id: args._id}, attributes, {new:true});
             return updatedManager;
         }catch(err) {
+            throw err;
+        }
+    },
+
+    updateManagerCredentials: async (args) => {
+        try{
+            var manager = await Manager.findOne({ _id: args._id });
+            if (!manager) {
+                throw new Error('Manager does not exist!');
+            }
+            if(args.password === null || args.password === undefined){
+                //only update username
+                updatedManager = await Manager.findOneAndUpdate({_id: args._id}, {username: args.username}, {new: true});
+                return updatedManager;
+            }
+            const isEqual = await bcrypt.compare(args.oldPassword, manager.password);
+            if(isEqual){    
+                let updatedManager = null;
+                if(args.username === null || args.username === undefined){
+                    //only update password
+                    const hashedPassword = await bcrypt.hash(args.password, 12);
+                    updatedManager = await Manager.findOneAndUpdate({_id: args._id}, {password: hashedPassword}, {new: true});
+                }
+                else if(args.username !== null || args.username !== undefined || args.password === null || args.password === undefined){
+                    //update username and password
+                    const hashedPassword = await bcrypt.hash(args.password, 12);
+                    updatedManager = await Manager.findOneAndUpdate({_id: args._id}, {username: args.username, password: hashedPassword}, {new: true});
+                }
+                return updatedManager;
+            }else{
+                throw new Error('Password is incorrect');
+            }
+        }catch(err){
             throw err;
         }
     }

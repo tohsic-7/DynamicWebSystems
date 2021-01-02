@@ -4,9 +4,6 @@ import AuthContext from '../context/auth-context';
 
 /**
  * TODO:
- * clearify that you can't sign up as manager (make role selection invisible)
- * fix buttons
- * face lift as you see fit
  * make sure that when logged in, online variable is set to true in db
  */
 

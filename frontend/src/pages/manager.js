@@ -65,7 +65,7 @@ class ManagerPage extends Component {
         return(
             <div className="display-data-container">
                 <h1>MANAGER PAGE</h1>
-                <ul className="list-group list-flash">
+                <ul className="list-group list-group-flush">
                     <li className="list-group-item">status:     {this.state.status}</li>
                     <li className="list-group-item">production:     {this.state.production}</li>
                     <li className="list-group-item">ratio:     {this.state.ratio}</li>

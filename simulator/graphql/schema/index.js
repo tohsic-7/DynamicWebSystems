@@ -122,6 +122,12 @@ type RootMutation{
         img_path: String
     ):Manager
 
+    updateManagerCredentials(
+      _id: ID!, 
+      password: String,
+      username:String, 
+      oldPassword: String):Manager
+
     insertConsumer(
         consumption: Float,
         blackout: Boolean

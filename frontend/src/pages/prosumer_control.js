@@ -143,7 +143,6 @@ class ProsumerControlPage extends Component {
 
     submitBatteryHandler = event =>{
         const battery = document.getElementById("batteryInt").value;
-        console.log(battery);
         let requestBody = {
             query: `
                 mutation {
@@ -157,12 +156,12 @@ class ProsumerControlPage extends Component {
 
 
         fetch('http://localhost:4000/graphql', {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    })
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
         .then(res => {
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Failed!');
@@ -170,7 +169,7 @@ class ProsumerControlPage extends Component {
             return res.json();
         })
         .then(resData => {
-                this.setState({buffer_size: resData.data.updateProsumer.buffer_size});
+            this.setState({buffer_size: resData.data.updateProsumer.buffer_size});
         })
         .catch(err => {
             console.log(err);
