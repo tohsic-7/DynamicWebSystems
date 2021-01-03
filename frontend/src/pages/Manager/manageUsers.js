@@ -139,16 +139,16 @@ class ManageUsers extends Component {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(()=>{
-                if(document.getElementById(id)!== null){
-                    document.getElementById(id).classList.remove("bg-warning");
-                }
-            })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
                 }
                 return res.json();
+            })
+            .then(()=>{
+                if(document.getElementById(id)!== null){
+                    document.getElementById(id).classList.remove("bg-warning");
+                }
             })
         }, blockTime);
     }
