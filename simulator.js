@@ -125,9 +125,10 @@ async function run(){
             var manager = await resolvers.getManagers();
 
             for (man of manager){
+                let timer = man.timer;
                 // if status running return maximum production from coal plant and ratio to buffer
                 if (man.status == "running"){
-                    var produced = coalProduction(10);
+                    var produced = coalProduction(10, man.production_cap);
                     var new_buffer = man.buffer + produced * (man.ratio/100);
                     if(new_buffer > man.buffer_size){
                         new_buffer = man.buffer_size;
@@ -136,23 +137,23 @@ async function run(){
                 }
                 // if status is starting return increasing production over time
                 else if(man.status == "starting"){
-                    var produced = coalProduction(startup_timer);
+                    var produced = coalProduction(timer, man.production_cap);
                     var new_buffer = man.buffer + produced * (man.ratio/100);
                     if(new_buffer > man.buffer_size){
                         new_buffer = man.buffer_size;
                     }
                     var produced = produced * (1-(man.ratio/100));
-                    startup_timer += 1;
-                    if (startup_timer >= 10){
+                    timer += 1;
+                    if (timer >= 10){
                         status = "running";
                         await resolvers.updateManager({_id: man._id, status: status});
                     }
                 }
                 //if status is stopped decreasing production over time
                 else if(man.status == "stopped"){
-                    if(startup_timer>0){
-                        startup_timer -= 1;
-                        var produced = coalProduction(startup_timer);
+                    if(timer>0){
+                        timer -= 1;
+                        var produced = coalProduction(timer, man.production_cap);
                     }  else{
                         var produced = 0;
                     }
@@ -175,20 +176,25 @@ async function run(){
 
                     }
                 }
-
+                let price;
+                let modelledPrice = calcModelledPrice(grid_consumption, wind_mean_day);
+                if(man.price_bool){
+                    price = modelledPrice;
+                }else{
+                    price = man.price;
+                }
                 await resolvers.updateManager({
                     _id: man._id,
                     production: produced,
                     buffer: new_buffer,
                     demand: grid_consumption,
-                    price: calculatePrice(grid_consumption, wind_mean_day)});
+                    timer: timer,
+                    price: price,
+                    modelled_price: modelledPrice
+                }); 
 
 
                 grid_electricity += produced;
-
-                
-
-
             }
 
             //use electricity in grid to distribute to users.
@@ -238,13 +244,16 @@ function boxMullerTransform(){
     return z;
 }
 
-function coalProduction(t){
+function coalProduction(t, pc){
+    if(pc !== 0 && (2.4**t)>pc){
+        return pc;
+    }
     return (2.4**t);
 }
 
-function calculatePrice(consumption, wind){
-    var price = 0.6*(7.5/wind)*(consumption/2000);
-    return price;
+function calcModelledPrice(consumption, wind){
+    var modelledPrice = 0.6*(7.5/wind)*(consumption/2000);
+    return modelledPrice;
 }
 
 // Distributes grid electricity randomly between houses and those who cannot sustain their consumption get blackout

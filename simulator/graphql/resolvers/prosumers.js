@@ -42,7 +42,8 @@ module.exports = {
             throw err;
         }
     },
-    getProsumers: async ()=> {
+    getProsumers: async (args, req)=> {
+        //console.log(req.isAuth);
         try{
             prosumers = await Prosumer.find();
             return prosumers.map(prosumer => {

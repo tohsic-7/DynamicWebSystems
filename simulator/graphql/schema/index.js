@@ -33,10 +33,14 @@ type Manager{
   buffer_size: Float!,
   consumption: Float,
   production: Float,
+  production_cap: Float,
   status: String,
+  timer: Int,
   ratio: Int,
   demand: Float,
   price: Float,
+  modelled_price: Float,
+  price_bool: Boolean,
   img_path: String
 }
 
@@ -100,10 +104,14 @@ type RootMutation{
         buffer_size: Float!,
         consumption: Float,
         production: Float,
+        production_cap: Float,
         status: String,
+        timer: Int,
         ratio: Int,
         demand: Float,
         price: Float,
+        modelled_price: Float,
+        price_bool: Boolean,
         img_path: String
     ): Manager
 
@@ -115,17 +123,21 @@ type RootMutation{
         buffer_size: Float,
         consumption: Float,
         production: Float,
+        production_cap: Float,
         status: String,
+        timer: Int,
         ratio: Int,
         demand: Float,
         price: Float,
+        modelled_price: Float,
+        price_bool: Boolean,
         img_path: String
     ):Manager
 
     updateManagerCredentials(
       _id: ID!, 
-      password: String,
       username:String, 
+      password: String,
       oldPassword: String):Manager
 
     insertConsumer(

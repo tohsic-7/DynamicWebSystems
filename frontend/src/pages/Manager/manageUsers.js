@@ -11,8 +11,13 @@ class ManageUsers extends Component {
     static contextType = AuthContext;
     
     componentDidMount(){
+        this.mounted = true;
         this.fetchProsumers();
         this.updateValues();
+    }
+
+    componentWillUnmount(){
+        this.mounted = false;
     }
 
     updateValues = ()=>{

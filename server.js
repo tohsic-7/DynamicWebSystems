@@ -5,6 +5,7 @@ const graphqlResolver = require('./simulator/graphql/resolvers/index')
 const bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
+const isAuth = require('./middleware/authentication');
 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
@@ -22,6 +23,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(isAuth);
 
 // server setup
 app.use('/graphql', graphqlHTTP({
