@@ -47,7 +47,7 @@ class ManageUsers extends Component {
             }
                 `
         }
-        fetch('http://localhost:4000/graphql', {
+        fetch('https://localhost:4000/graphql', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -112,7 +112,7 @@ class ManageUsers extends Component {
               }
                 `
         }
-        fetch('http://localhost:4000/graphql', {
+        fetch('https://localhost:4000/graphql', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -137,7 +137,7 @@ class ManageUsers extends Component {
                 `
         }
         setTimeout( () =>{
-            fetch('http://localhost:4000/graphql', {
+            fetch('https://localhost:4000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
@@ -166,7 +166,7 @@ class ManageUsers extends Component {
             }
             `
         }
-        fetch('http://localhost:4000/graphql', {
+        fetch('https://localhost:4000/graphql', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
