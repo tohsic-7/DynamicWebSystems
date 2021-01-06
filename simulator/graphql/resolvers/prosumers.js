@@ -64,7 +64,7 @@ module.exports = {
         }
         const isEqual = await bcrypt.compare(args.password, prosumer.password);
         if (isEqual) {
-            Prosumer.updateOne({username: args.username}, {online: true}, {new:true});
+            await Prosumer.findOneAndUpdate({username: args.username}, {online: true}, {new: true});
         } else{
             throw new Error('Password is incorrect!');
         }

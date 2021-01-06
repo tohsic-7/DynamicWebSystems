@@ -40,6 +40,7 @@ class ManageUsers extends Component {
                   production
                   ratio_excess
                   ratio_under
+                  blackout
                   online
                   img_path
                 }
@@ -74,11 +75,6 @@ class ManageUsers extends Component {
     }
 
     visitHandler = (p) =>{ 
-        /**
-         * visit prosumer if display===false && displayProsumer===null --> no prosumer is being visited
-         * visit prosumer if display ===true && displayProsumer.username !== p.username --> displaying prosumer but new one is clicked
-         * close if          display === true && displayProsumer.username === p.username --> prosumer that is being visited is clicked
-         */
         if(!this.state.display && this.state.displayProsumer===null){
             this.setState({displayProsumer: p})
             this.setState(prevState => {
@@ -96,7 +92,11 @@ class ManageUsers extends Component {
         } 
     }
     
-    blockHandler = (id, under, excess) =>{
+    blockHandler = (id, under, excess, blackout) =>{
+        if(blackout){
+            //can't block prosumer during blackout
+            return
+        }
         document.getElementById(id).classList.add("bg-warning");
         let blockTime = (Math.random() * (101 - 10) + 10)*1000;
         let ratio_under = under;
@@ -183,16 +183,17 @@ class ManageUsers extends Component {
             this.fetchProsumers();
         })
     }
-
+//this.state.status!=='stopped' ?"btn btn-danger" :"btn btn-success"
 
     render(){
         const prosumersList = this.state.prosumers.map(prosumer => {
             return (
-              <tr key={prosumer._id} id={prosumer._id}>
+              <tr key={prosumer._id} id={prosumer._id} className={prosumer.blackout?"bg-dark":""}>
                 <td>{prosumer.username}</td>
                 <td>{prosumer.online}</td>
+                <td>{prosumer.blackout}</td>
                 <td><button className = "btn btn-success" type="submit" onClick={() => {this.visitHandler(prosumer)}}>Visit</button></td>
-                <td><button className = "btn btn-dark" type="submit" onClick={() => {this.blockHandler(prosumer._id, prosumer.ratio_under, prosumer.ratio_excess)}}>Block</button></td>
+                <td><button className = "btn btn-dark" type="submit" onClick={() => {this.blockHandler(prosumer._id, prosumer.ratio_under, prosumer.ratio_excess, prosumer.blackout)}}>Block</button></td>
                 <td><button className = "btn btn-danger" type="submit" onClick={() => {this.removeHandler(prosumer._id)}}>Remove</button></td>
             </tr>
             );
@@ -205,6 +206,7 @@ class ManageUsers extends Component {
                         <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Blackout</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>

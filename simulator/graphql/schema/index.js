@@ -16,6 +16,7 @@ type Prosumer{
   ratio_excess: Int,
   ratio_under: Int,
   online: Boolean,
+  blackout: Boolean,
   img_path: String
 }
 

@@ -11,10 +11,10 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAn
 var consumption_mean = 350;
 var consumption_dev = 20;
 // Wind for year normal dist values
-var wind_mean_year = 7;
+var wind_mean_year = 3;
 var wind_dev_year = 1;
 // Wind per day normal dist values (mean per day changes)
-var wind_mean_day = 7.5;
+var wind_mean_day = 3;
 var wind_dev_day = 0.5;
 
 //Wind turbine specs
@@ -274,7 +274,6 @@ async function blackouts(grid_electricity){
         if(((Math.random() == 0) && p_index < shuffled_prosumers.length) || c_index >= shuffled_consumers.length){
             var prosumer = shuffled_prosumers[p_index];
             p_index += 1;
-
             // If prosumer production is more than consumption no blackout
             if(prosumer.production - prosumer.consumed_from_grid>0){
                 blackout_bool = false;

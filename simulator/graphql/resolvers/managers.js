@@ -65,7 +65,7 @@ module.exports = {
         }
         const isEqual = await bcrypt.compare(args.password, manager.password);
         if (isEqual) {
-            Manager.updateOne({username: args.username}, {online: true}, {new:true});
+            Manager.updateOne({username: args.username}, {online: true});
         } else{
             throw new Error('Password is incorrect!');
         }
