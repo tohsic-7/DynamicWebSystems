@@ -185,7 +185,6 @@ class ManageProfile extends Component {
     }
 
     credentialsHandler = event => {
-        console.log("handler is running with following input:");
         const username = this.usernameEl.current.value;
         const oldPassword = this.oldPasswordEl.current.value;
         const password = this.passwordEl.current.value;
@@ -218,6 +217,27 @@ class ManageProfile extends Component {
             return res.json();
         })
         .then( resData=>{
+            let error;
+            if(resData.errors !== undefined){
+                error = resData.errors[0].message;
+            }
+            if(error === "UsernameTaken"){
+                document.getElementById("usernameHelper").style.display = "block";
+                return
+            }
+            else if(error === "IncorrectPassword"){
+                document.getElementById("oldPasswordHelper").style.display = "block";
+                return
+            }
+            document.getElementById("username").value = "";
+            document.getElementById("oldPassword").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("confirmPassword").value = "";
+
+            document.getElementById("usernameHelper").style.display = "none";
+            document.getElementById("oldPasswordHelper").style.display = "none";
+            document.getElementById("confirmPasswordHelper").style.display = "none";
+
             this.fetchManager();
         })
         .catch(err => {
@@ -261,12 +281,12 @@ class ManageProfile extends Component {
                         <div className="form-group">
                             <label htmlFor="username" >New username</label>
                             <input type="username" id="username" className="form-control" placeholder="Update username" ref={this.usernameEl} />
-
+                            <span id="usernameHelper" className="help-inline text-danger" style={{display: 'none'}}>The username you have chosen is already taken</span>
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Old password</label>
                             <input type="password" id="oldPassword" className="form-control" placeholder="Update password" ref={this.oldPasswordEl} />
-                            <span id="oldPasswordHelper" className="help-inline text-danger" style={{display: 'none'}}>The old password does not match</span>
+                            <span id="oldPasswordHelper" className="help-inline text-danger" style={{display: 'none'}}>The password does not match</span>
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">New password</label>

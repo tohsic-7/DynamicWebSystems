@@ -116,12 +116,14 @@ class AuthPage extends Component {
             }
         })
             .then(res => {
+                console.log(res.status);
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
                 }
                 return res.json();
             })
             .then(resData => {
+                console.log("2:nd then");
                 if(resData.data.loginProsumer.token){
                     this.context.login(
                         resData.data.loginProsumer.userId,
@@ -131,7 +133,8 @@ class AuthPage extends Component {
                     );
                 }
                 })
-                .catch(err => {
+            .catch(err => {
+                console.log("faku everyting dies :)");
                 console.log(err);
             });
         }

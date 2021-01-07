@@ -127,7 +127,7 @@ module.exports = {
      * 
      *      */
 
-    updateManagerCredentials: async (args) => {
+    updateManagerCredentials: async (args,req, res) => {
         try{
             var manager = await Manager.findOne({ _id: args._id });
             const isEqual = await bcrypt.compare(args.oldPassword, manager.password);
@@ -138,16 +138,20 @@ module.exports = {
             if( args.password !== null && args.password !== undefined && args.password !== ""){
                 nonEmptyNewPassword = true;
             }
+            if(nonEmptyNewPassword && !isEqual){
+                throw new Error("IncorrectPassword");
+            }
             if( args.username !== null && args.username !== undefined && args.username !== ""){
                 nonEmptyNewUsername = true;
                 const takenUsername = await Manager.findOne({ username: args.username });
                 if(takenUsername){
-                    throw new Error("Taken username");
+                    throw new Error("UsernameTaken");
                 }
             }
             if (!manager) {
                 throw new Error('Manager does not exist!');
             }
+            // throw all possible errors before updating and/or returning
             if(nonEmptyNewUsername){
                 updatedManager = await Manager.findOneAndUpdate({_id: args._id}, {username: args.username}, {new: true});
             }

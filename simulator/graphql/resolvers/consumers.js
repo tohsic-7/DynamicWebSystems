@@ -64,8 +64,12 @@ module.exports = {
 
     deleteConsumer: async (args)=> {
         try{
-            Consumer.deleteOne({id: args.id})
-            return true;
+            var deletedConsumer= await Consumer.deleteOne({_id: args._id});
+            if(deletedConsumer){
+                return true;
+            }else{
+                return false;
+            }
         }catch(err){
             throw err;
         }
