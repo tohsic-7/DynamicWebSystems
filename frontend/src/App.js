@@ -8,34 +8,64 @@ import ProsumerPage from './pages/prosumer';
 import ManagerPage from './pages/manager';
 import ManageUsers from './pages/Manager/manageUsers'
 import ManageProfile from './pages/Manager/manageProfile'
+import ProsumerRoute from './routing/ProsumerRoute';
+import ManagerRoute from './routing/ManagerRoute';
 
 import ProsumerControlPage from './pages/prosumer_control'
 import './App.css';
 
+const jwt = require("jsonwebtoken");
+
 class App extends Component {
   state = {
-    userId: localStorage.getItem('uid'),
-    userType: parseInt(localStorage.getItem('userType')),
+    userId: null,
+    userType: null,
     token: localStorage.getItem('token')
   };
 
+  componentDidMount(){
+    try{
+      if(this.state.token){
+        var decoded = jwt.verify(JSON.parse(this.state.token), 'somesupersecretkey');
+        this.setState({userId: decoded.userId});
+        this.setState({userType: decoded.userType});
+      }
+    } catch(error){
+      console.log(error);
+      if(error.name === "TokenExpiredError"){
+        console.log("token");
+        this.removeToken();
+      }
+      if(error.name === "JsonWebTokenError"){
+        this.removeToken();
+      }
+    }
+    console.log(this.state.token);
+    console.log(this.state.userId);
+    console.log(this.state.userType);
+    console.log(decoded.userId);
+    console.log(decoded.userType);
+
+  }
+
   login = (userId, userType, token, tokenExpiration) => {
+    console.log(token);
     this.setState({
       userId: userId,
       userType: userType,
-      token: token
+      token: JSON.stringify(token)
     });
-    localStorage.setItem('uid', this.state.userId);
-    localStorage.setItem('userType', this.state.userType);
-    localStorage.setItem('token', JSON.stringify(this.state.token));
+    localStorage.setItem('token', this.state.token);
   };
 
   logout = () => {
     this.setState({ userId: null, userType:null, token:null});
-    localStorage.removeItem('uid');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('token');
+    this.removeToken();
   };
+
+  removeToken(){
+    localStorage.removeItem('token');
+  }
 
 
   render() {
@@ -51,17 +81,15 @@ class App extends Component {
               logout: this.logout
               }}
           >
+            
             <MainNavigation />
             <Switch>
-              {this.state.userType === 1 && <Route exact strict path="/manage/users" component={ManageUsers} />}
-              {this.state.userType === 1 && <Route exact strict path="/manage/profile" component={ManageProfile} />}
-              {this.state.userType === 0 && <Redirect from="/auth" to="/prosumer" exact/>}
-              {this.state.userType === 1 && <Redirect from="/auth" to="/manager" exact/>}
-              {!this.state.token &&<Route path="/auth" component={AuthPage} />}
-              {this.state.userType === 0 && <Route path="/prosumer" component={ProsumerPage} />}
-              {this.state.userType === 0 && <Route path="/prosumer_controls" component={ProsumerControlPage} />}
-              {this.state.userType === 1 && <Route path="/manager" component={ManagerPage} />}
-              
+              {<ManagerRoute exact strict token={this.state.token} path="/manage/users" component={ManageUsers} />}
+              {<ManagerRoute exact strict token={this.state.token} path="/manage/profile" component={ManageProfile} />}
+              {<ManagerRoute exact token={this.state.token}path="/manager" component={ManagerPage} />}
+              {<ProsumerRoute exact token={this.state.token} path="/prosumer_controls" component={ProsumerControlPage} />}
+              {<ProsumerRoute exact token={this.state.token} path="/prosumer" component={ProsumerPage} />}
+              {<Route path="/auth" component={AuthPage} />}
               {!this.state.token && <Redirect to="/auth" exact />}
             </Switch>
           </AuthContext.Provider>

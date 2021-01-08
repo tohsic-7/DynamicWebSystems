@@ -14,11 +14,6 @@ class ProsumerPage extends Component {
 
     static contextType = AuthContext;
 
-
-    constructor(props) {
-        super(props);
-        }
-
     componentDidMount(){
         this.fetchProsumerData();
         this.updateValues();
