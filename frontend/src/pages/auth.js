@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 
 import AuthContext from '../context/auth-context';
 
@@ -10,9 +9,7 @@ import AuthContext from '../context/auth-context';
 
 class AuthPage extends Component {
     state = {
-        isLogin: true,
-        redirectProsumer: false,
-        redirectManager: false
+        isLogin: true
     };
 
     static contextType = AuthContext;
@@ -91,7 +88,6 @@ class AuthPage extends Component {
                         resData.data.loginManager.token,
                         resData.data.loginManager.tokenExpiration
                     );
-                    this.setState({redirectManager: true});
                 }
                 })
                 .catch(err => {
@@ -133,7 +129,6 @@ class AuthPage extends Component {
                         resData.data.loginProsumer.token,
                         resData.data.loginProsumer.tokenExpiration
                     );
-                    this.setState({redirectProsumer: true});
                 }
                 })
                 .catch(err => {
@@ -143,13 +138,6 @@ class AuthPage extends Component {
     };
 
   render() {
-      if(this.state.redirectProsumer){
-          return <Redirect to="/prosumer" />
-      }
-
-      if(this.state.redirectManager){
-          return <Redirect to="/manager" />
-      }
     return (
         <div className="auth-container col-12">
             <div className="form-container col-6">

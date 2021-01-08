@@ -23,13 +23,19 @@ class App extends Component {
     token: localStorage.getItem('token')
   };
 
-  componentDidMount(){
+  constructor(props){
+    super(props);
+    console.log(this.state.token);
+    var token = localStorage.getItem('token');
     try{
-      if(this.state.token){
-        var decoded = jwt.verify(JSON.parse(this.state.token), 'somesupersecretkey');
-        this.setState({userId: decoded.userId});
-        this.setState({userType: decoded.userType});
+      if(token){
+        var decoded = jwt.verify(JSON.parse(token), 'somesupersecretkey');
       }
+      this.state = {
+        userId: decoded.userId,
+        userType: decoded.userType,
+        token: token
+      };
     } catch(error){
       console.log(error);
       if(error.name === "TokenExpiredError"){
@@ -40,12 +46,6 @@ class App extends Component {
         this.removeToken();
       }
     }
-    console.log(this.state.token);
-    console.log(this.state.userId);
-    console.log(this.state.userType);
-    console.log(decoded.userId);
-    console.log(decoded.userType);
-
   }
 
   login = (userId, userType, token, tokenExpiration) => {
@@ -84,11 +84,13 @@ class App extends Component {
             
             <MainNavigation />
             <Switch>
-              {<ManagerRoute exact strict token={this.state.token} path="/manage/users" component={ManageUsers} />}
-              {<ManagerRoute exact strict token={this.state.token} path="/manage/profile" component={ManageProfile} />}
+              {<ManagerRoute exact token={this.state.token} path="/manage/users" component={ManageUsers} />}
+              {<ManagerRoute exact token={this.state.token} path="/manage/profile" component={ManageProfile} />}
               {<ManagerRoute exact token={this.state.token}path="/manager" component={ManagerPage} />}
               {<ProsumerRoute exact token={this.state.token} path="/prosumer_controls" component={ProsumerControlPage} />}
               {<ProsumerRoute exact token={this.state.token} path="/prosumer" component={ProsumerPage} />}
+              {this.state.userType === 0 && <Redirect from="/auth" to="/prosumer" exact />}
+              {this.state.userType === 1 && <Redirect from="/auth" to="/manager" exact />}
               {<Route path="/auth" component={AuthPage} />}
               {!this.state.token && <Redirect to="/auth" exact />}
             </Switch>
