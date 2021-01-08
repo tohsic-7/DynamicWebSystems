@@ -8,7 +8,8 @@ class ManageProfile extends Component {
         ratio_slider_value: 0,
         buffer_size:0,
         production:0,
-        username: ''
+        username: '',
+        image_upload: false
     };
     constructor(props) {
         super(props);
@@ -28,6 +29,14 @@ class ManageProfile extends Component {
     }
     componentWillUnmount(){
         this.mounted = false;
+    }
+
+    image_uploader_bool(){
+        if(!this.state.image_upload){
+            this.setState({image_upload: true});
+        }else {
+            this.setState({image_upload: false});
+        }
     }
 
     fetchManager = () => {
@@ -243,7 +252,6 @@ class ManageProfile extends Component {
         .catch(err => {
             console.log(err);
         });
-        
     }
 
     render(){
@@ -301,6 +309,18 @@ class ManageProfile extends Component {
                             <button onClick={this.credentialsHandler} className = "btn btn-primary" type="button">Update credentials</button>
                         </div>
                     </form>
+                </div>
+                <div className="display-data-container">
+                <img className="img-house" src='./images/prosumers/hej.jpeg' alt="heeeeeej" />
+                    <br/>
+                    {!this.state.image_upload && <button className="btn btn-info" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Change house image</button>}
+                    {this.state.image_upload && <div>
+                        <input type="file" id="file_input" accept="image/*"/>
+                        <br/>
+                        <br/>
+                        <button className="btn btn-danger" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Cancel</button>
+                        <button type="submit" className="btn btn-success" id="house-button" onClick={this.image_uploader.bind(this)}> Change house image</button>
+                    </div>}
                 </div>
             </div>
         );

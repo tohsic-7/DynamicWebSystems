@@ -17,6 +17,7 @@ class ProsumerPage extends Component {
 
     constructor(props) {
         super(props);
+        this.fetchId = 0;
         }
 
     componentDidMount(){
@@ -24,9 +25,13 @@ class ProsumerPage extends Component {
         this.updateValues();
     }
 
+    componentWillUnmount(){
+        clearInterval(this.fetchId);
+    }
+
 
     updateValues = () => {
-        setInterval(() =>{
+        this.fetchId = setInterval(() =>{
            this.fetchProsumerData()
         },3000);
     }

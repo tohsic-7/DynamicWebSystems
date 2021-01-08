@@ -17,13 +17,14 @@ class ManagerPage extends Component {
         super(props);
         this.priceEl = React.createRef();
         this.priceBoolEl = React.createRef();
+        this.fetchId = 0;
     }
     static contextType = AuthContext;
 
     componentDidMount(){
         this.mounted = true;
         this.fetchManagerData();
-        setTimeout(() =>{
+        this.fetchId = setTimeout(() =>{
             var check = document.getElementById("priceBool");
             check.checked = this.state.price_bool;
         },100)
@@ -31,6 +32,7 @@ class ManagerPage extends Component {
     }
 
     componentWillUnmount(){
+        clearInterval(this.fetchId);
         this.mounted = false;
     }
     
@@ -177,7 +179,11 @@ class ManagerPage extends Component {
             <div className="display-data-container">
                 <h1>MANAGER PAGE</h1>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item">Status:     {this.state.status}</li>
+                    <li className="list-group-item">Status:     {this.state.status} 
+                        <button onClick={this.startStopHandler} className = {this.state.status!=='stopped' ?"btn btn-danger" :"btn btn-success"} style={{float: 'right'}} type="button">
+                            {this.state.status!=='stopped' ? 'Stop' : 'Start'}
+                        </button>
+                    </li>
                     <li className="list-group-item">Production:     {this.state.production}</li>
                     <li className="list-group-item">Consumption:     {this.state.consumption}</li>
                     <li className="list-group-item">Buffer:     {this.state.buffer}</li>
@@ -200,12 +206,6 @@ class ManagerPage extends Component {
                     </li>
                     
                 </ul>
-
-                <div className="form-actions">
-                    <button onClick={this.startStopHandler} className = {this.state.status!=='stopped' ?"btn btn-danger" :"btn btn-success"} style={{marginRight: 10 + 'px'}} type="button">
-                        {this.state.status!=='stopped' ? 'Stop' : 'Start'}
-                    </button>
-                </div>
             </div>
         );
     }

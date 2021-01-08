@@ -9,6 +9,11 @@ class ManageUsers extends Component {
         display: false,
         displayProsumer: null,
     };
+
+    constructor(props){
+        super(props);
+        this.fetchId = 0;
+    }
     static contextType = AuthContext;
     
     componentDidMount(){
@@ -19,11 +24,12 @@ class ManageUsers extends Component {
     }
 
     componentWillUnmount(){
+        clearInterval(this.fetchId);
         this.mounted = false;
     }
 
     updateValues = ()=>{
-        setInterval(() =>{
+        this.fetchId = setInterval(() =>{
             this.fetchProsumers();
             this.fetchConsumers();
          },3000);
@@ -290,7 +296,6 @@ class ManageUsers extends Component {
               </tr>
             );
           });
-        let i = 0;
         const consumersList = this.state.consumers.map((consumer, index) => {
             return(
                 <tr key={consumer._id} id={consumer._id} className={consumer.blackout?"bg-dark":""}>
@@ -328,7 +333,7 @@ class ManageUsers extends Component {
                 <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">id</th>
+                            <th scope="col">#</th>
                             <th scope="col">Consumption</th>
                             <th scope="col">Blackout</th>
                             <th scope="col"><button className = "btn btn-success" type="submit" onClick={() => {this.addConsumerHandler()}}>Add consumer</button></th>
