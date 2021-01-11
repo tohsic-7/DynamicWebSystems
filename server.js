@@ -7,6 +7,9 @@ var mongoose = require('mongoose');
 var url = "mongodb://localhost:27017/grid";
 const fs = require('fs');
 const https = require('https');
+var multer = require('multer');
+var upload = multer({dest: 'public/'});
+const path = require("path");
 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAndModify: true});
@@ -31,11 +34,29 @@ app.use((req, res, next) => {
 });
 
 // server setup
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql',
+graphqlHTTP({
   schema: graphqlSchema,
   rootValue: graphqlResolver,
   graphiql: true,                                 //Remove on deployment
 }));
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/')
+  },
+  filename: function (req, file, cb) {
+    /*Appending extension with original name*/
+    cb(null, file.originalname + path.extname(file.originalname)) 
+  }
+})
+
+var upload = multer({ storage: storage });
+
+app.post("/uploadImage", upload.single('file'), function(req, res){
+    console.log(req.file);
+
+})
 
 https.createServer(options, app).listen(4000, () => console.log('server running'));
 

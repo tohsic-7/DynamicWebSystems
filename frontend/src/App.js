@@ -70,7 +70,7 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter forceRefresh>
         <React.Fragment>
           <AuthContext.Provider
             value = {{
@@ -92,7 +92,7 @@ class App extends Component {
               {this.state.userType === 0 && <Redirect from="/auth" to="/prosumer" exact />}
               {this.state.userType === 1 && <Redirect from="/auth" to="/manager" exact />}
               {<Route path="/auth" component={AuthPage} />}
-              {!this.state.token && <Redirect to="/auth" exact />}
+              {<Redirect to="/auth" exact />}
             </Switch>
           </AuthContext.Provider>
         </React.Fragment>

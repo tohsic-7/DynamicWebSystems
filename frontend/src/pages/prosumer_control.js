@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import AuthContext from '../context/auth-context';
 import './prosumer.css'
 
+const multer = require("multer");
+const path = require("path");
+var fs = require("fs");
+var FormData = require("form-data");
+
 class ProsumerControlPage extends Component {
     state = {
         username: "",
@@ -176,40 +181,17 @@ class ProsumerControlPage extends Component {
         });
     }
 
-    submitImageHandler(image_path){
-        const battery = document.getElementById("batteryInt").value;
-        console.log(battery);
-        let requestBody = {
-            query: `
-                mutation {
-                    updateProsumer(_id:"${this.context.userId}", img_path:${image_path}) {
-                        buffer_size
-                    }
-                }
-                `
-        };
+    async submitImageHandler(){
+        var file = document.getElementById("file_input").files[0];
+        var formData = new FormData()
+        formData.append('file', file);
+        console.log(formData.get("file"));
 
-
-
-        fetch('https://localhost:4000/graphql', {
+        fetch('https://localhost:4000/uploadImage', {
         method: 'POST',
-        body: JSON.stringify(requestBody),
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    })
-        .then(res => {
-            if (res.status !== 200 && res.status !== 201) {
-                throw new Error('Failed!');
-            }
-            return res.json();
-        })
-        .then(resData => {
-                this.setState({buffer_size: resData.data.updateProsumer.buffer_size});
-        })
-        .catch(err => {
-            console.log(err);
+        body: formData
         });
+
     }
 
 
@@ -235,11 +217,13 @@ class ProsumerControlPage extends Component {
     }
 
     image_uploader(){
-        const fs = require("fs");
-        var file = document.getElementById("file_input").files;
-        console.log(file[0]);
-        fs.copyFile(file[0], '/images/prosumers');
+        var file = document.getElementById("file_input").files[0];
+        fs.writeFileSync("./public/images/prosumers", file, function(err){
+            if (err) throw err;
+            console.log("hurraaaaa!");
+        })
     }
+
 
     render(){
         return(
@@ -281,7 +265,7 @@ class ProsumerControlPage extends Component {
                     <br/>
                     <br/>
                     <button className="btn btn-danger" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Cancel</button>
-                    <button type="submit" className="btn btn-success" id="house-button" onClick={this.image_uploader.bind(this)}> Change house image</button>
+                    <button type="submit" className="btn btn-success" id="house-button" onClick={this.submitImageHandler.bind(this)}> Change house image</button>
                 </div>}
             </div>
         </div>
