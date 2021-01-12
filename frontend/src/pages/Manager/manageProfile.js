@@ -262,7 +262,7 @@ class ManageProfile extends Component {
                     <h5>Hello {this.state.username}! Here you can control your settings</h5>
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item">
-                            <label className="form-label" htmlFor="ratioRange">During production {this.state.ratio_slider_value}% goes to the battery</label>
+                            <label className="form-label" htmlFor="ratioRange">During production {this.state.ratio}% goes to the battery</label>
                                 <div className="range">
                                     <input type="range" className="form-range" id="ratioRange" onInput={this.updateRatioValue.bind(this)} value={this.state.ratio_slider_value} />
                                     <br></br><button type="submit" className="btn btn-info" onClick={this.submitRatioHandler}> Update ratio to {this.state.ratio_slider_value}% </button>

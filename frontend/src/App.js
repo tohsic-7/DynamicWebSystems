@@ -59,9 +59,41 @@ class App extends Component {
   };
 
   logout = () => {
+    this.setOffline();
     this.setState({ userId: null, userType:null, token:null});
     this.removeToken();
   };
+
+  setOffline(){
+  let requestBody = {
+    query: `
+        mutation {
+            updateProsumer(_id:"${this.state.userId}", online: false) {
+                img_path
+            }
+        }
+            `
+    };
+
+    fetch('https://localhost:4000/graphql', {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+    'Content-Type': 'application/json'
+    }
+    })
+    .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+            throw new Error('Failed!');
+        }
+        return res.json();
+    }).then(res => {
+      return;
+    })
+    .catch(err => {
+        console.log(err);
+    });
+  }
 
   removeToken(){
     localStorage.removeItem('token');
