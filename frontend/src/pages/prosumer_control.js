@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import AuthContext from '../context/auth-context';
 import './prosumer.css'
 
-const multer = require("multer");
-const path = require("path");
-var fs = require("fs");
 var FormData = require("form-data");
 
 class ProsumerControlPage extends Component {
@@ -51,7 +48,7 @@ class ProsumerControlPage extends Component {
                     img_path
                 }
             }
-                `
+            `
         }
         fetch('https://localhost:4000/graphql', {
         method: 'POST',
@@ -92,8 +89,6 @@ class ProsumerControlPage extends Component {
                     `
             };
 
-
-
             fetch('https://localhost:4000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -127,9 +122,6 @@ class ProsumerControlPage extends Component {
                 }
                 `
         };
-
-
-
         fetch('https://localhost:4000/graphql', {
         method: 'POST',
         body: JSON.stringify(requestBody),

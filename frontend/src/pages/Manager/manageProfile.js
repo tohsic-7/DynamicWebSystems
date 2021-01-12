@@ -9,7 +9,8 @@ class ManageProfile extends Component {
         buffer_size:0,
         production:0,
         username: '',
-        image_upload: false
+        image_upload: false,
+        img_path: ""
     };
     constructor(props) {
         super(props);
@@ -26,6 +27,9 @@ class ManageProfile extends Component {
     componentDidMount(){
         this.mounted = true;
         this.fetchManager();
+        setTimeout(() => {
+            this.load_image();
+        }, 100)
     }
     componentWillUnmount(){
         this.mounted = false;
@@ -80,6 +84,7 @@ class ManageProfile extends Component {
             this.setState({ratio: manager.ratio});
             this.setState({ratio_slider_value: manager.ratio});
             this.setState({username: manager.username});
+            this.setState({img_path: manager.img_path});
             })
             .catch(err => {
             console.log(err);
@@ -97,8 +102,6 @@ class ManageProfile extends Component {
                 }
                 `
         };
-
-
 
         fetch('https://localhost:4000/graphql', {
             method: 'POST',
@@ -254,6 +257,63 @@ class ManageProfile extends Component {
         });
     }
 
+    async submitImageHandler(){
+        var file = document.getElementById("file_input").files[0];
+        var formData = new FormData()
+        formData.append('file', file);
+
+        await fetch('https://localhost:4000/uploadImageManager', {
+        method: 'POST',
+        body: formData
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+        
+        
+        let requestBody = {
+            query: `
+                mutation {
+                    updateManager(_id:"${this.context.userId}", img_path:"${file.name}") {
+                        img_path
+                    }
+                }
+                `
+        };
+    
+        await fetch('https://localhost:4000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+        'Content-Type': 'application/json'
+         }
+        })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+            return res.json();
+        })
+        .then(resData => {
+                this.setState({img_path: resData.data.updateManager.img_path});
+                this.load_image();
+                this.image_uploader_bool();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+    }
+
+    load_image(){
+        document.getElementById("img").src = "https://localhost:4000/public/managers/" + this.state.img_path;
+    }
+
     render(){
         return(
             <div className="display-data">
@@ -311,7 +371,7 @@ class ManageProfile extends Component {
                     </form>
                 </div>
                 <div className="display-data-container">
-                <img className="img-house" src='./images/prosumers/hej.jpeg' alt="heeeeeej" />
+                <img className="img-house" id ="img" src='./images/prosumers/hej.jpeg' alt="heeeeeej" />
                     <br/>
                     {!this.state.image_upload && <button className="btn btn-info" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Change house image</button>}
                     {this.state.image_upload && <div>
@@ -319,7 +379,7 @@ class ManageProfile extends Component {
                         <br/>
                         <br/>
                         <button className="btn btn-danger" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Cancel</button>
-                        <button type="submit" className="btn btn-success" id="house-button" onClick={this.image_uploader.bind(this)}> Change house image</button>
+                        <button type="submit" className="btn btn-success" id="house-button" onClick={this.submitImageHandler.bind(this)}> Change house image</button>
                     </div>}
                 </div>
             </div>

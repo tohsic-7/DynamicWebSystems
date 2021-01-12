@@ -56,13 +56,21 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 app.post("/uploadImage", upload.single('file'), function(req, res){
-    if(req.file){
-      return res.sendStatus(200);
-    }
-    else{
-      return res.sendStatus(404);
-    }
+  if(req.file){
+    return res.sendStatus(200);
+  }
+  else{
+    return res.sendStatus(404);
+  }
+})
 
+app.post("/uploadImageManager", upload.single('file'), function(req, res){
+  if(req.file){
+    return res.sendStatus(200);
+  }
+  else{
+    return res.sendStatus(404);
+  }
 })
 
 https.createServer(options, app).listen(4000, () => console.log('server running'));
