@@ -371,7 +371,7 @@ class ManageProfile extends Component {
                     </form>
                 </div>
                 <div className="display-data-container">
-                <img className="img-house" id ="img" src='./images/prosumers/hej.jpeg' alt="heeeeeej" />
+                <img className="img-house" id ="img" alt="no image uploaded" />
                     <br/>
                     {!this.state.image_upload && <button className="btn btn-info" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Change house image</button>}
                     {this.state.image_upload && <div>

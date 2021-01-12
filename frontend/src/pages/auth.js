@@ -116,7 +116,6 @@ class AuthPage extends Component {
             }
         })
             .then(res => {
-                console.log(res.status);
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
                 }

@@ -144,10 +144,10 @@ class ManageUsers extends Component {
         let ratio_under = under;
         let ratio_excess = excess
 
-        let requestBody = { //ratio_under should maybe be 100?
+        let requestBody = {
             query: `
             mutation{
-                updateProsumer(_id:"${id}",ratio_under:0, ratio_excess:0){
+                updateProsumer(_id:"${id}",ratio_under:100, ratio_excess:0){
                   ratio_excess
                   ratio_under
                 }
@@ -155,11 +155,11 @@ class ManageUsers extends Component {
                 `
         }
         fetch('https://localhost:4000/graphql', {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        headers: {
-        'Content-Type': 'application/json'
-        }
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+            'Content-Type': 'application/json'
+            }
         })
         .then(res => {
             if (res.status !== 200 && res.status !== 201) {
@@ -180,9 +180,9 @@ class ManageUsers extends Component {
         }
         setTimeout( () =>{
             fetch('https://localhost:4000/graphql', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
                     'Content-Type': 'application/json'
                 }
             })
