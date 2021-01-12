@@ -181,6 +181,7 @@ class ProsumerControlPage extends Component {
 
     async submitImageHandler(){
         var file = document.getElementById("file_input").files[0];
+        if(!file) return
         var formData = new FormData()
         formData.append('file', file);
 

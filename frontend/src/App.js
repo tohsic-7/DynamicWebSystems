@@ -25,7 +25,6 @@ class App extends Component {
 
   constructor(props){
     super(props);
-    console.log(this.state.token);
     var token = localStorage.getItem('token');
     try{
       if(token){
@@ -39,7 +38,6 @@ class App extends Component {
     } catch(error){
       console.log(error);
       if(error.name === "TokenExpiredError"){
-        console.log("token");
         this.removeToken();
       }
       if(error.name === "JsonWebTokenError"){
@@ -49,7 +47,6 @@ class App extends Component {
   }
 
   login = (userId, userType, token, tokenExpiration) => {
-    console.log(token);
     this.setState({
       userId: userId,
       userType: userType,

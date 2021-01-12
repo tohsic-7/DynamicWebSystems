@@ -169,7 +169,7 @@ class ManagerPage extends Component {
             this.setState({modelled_price: resData.data.getOneManager.modelled_price});
             this.setState({price_bool: resData.data.getOneManager.price_bool});
             })
-            .catch(err => {
+        .catch(err => {
             console.log(err);
         });
     }
