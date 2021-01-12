@@ -2,6 +2,7 @@ var resolvers = require('./simulator/graphql/resolvers/index')
 var mongoose = require('mongoose');
 const prosumer = require('./models/prosumer');
 const { updateProsumer } = require('./simulator/graphql/resolvers/index');
+const consumer = require('./models/consumer');
 var url = "mongodb://localhost:27017/grid";
 
 
@@ -177,7 +178,7 @@ async function run(){
                     }
                 }
                 let price;
-                let modelledPrice = calcModelledPrice(grid_consumption, wind_mean_day);
+                let modelledPrice = await calcModelledPrice(grid_consumption, wind_mean_day);
                 if(man.price_bool){
                     price = modelledPrice;
                 }else{
@@ -251,9 +252,17 @@ function coalProduction(t, pc){
     return (2.4**t);
 }
 
-function calcModelledPrice(consumption, wind){
-    var modelledPrice = 0.6*(7.5/wind)*(consumption/2000);
+async function calcModelledPrice(consumption, wind){
+    var modelledPrice = 0.3*(wind_mean_year/wind)*(consumption/await averageConsumption());
     return modelledPrice;
+}
+
+async function averageConsumption(){
+    var prosumers = await resolvers.getProsumers();
+    var consumers = await resolvers.getConsumers();
+    var numberUsers = prosumers.length + consumers.length;
+    var average_total_consumption = numberUsers * consumption_mean;
+    return average_total_consumption;
 }
 
 // Distributes grid electricity randomly between houses and those who cannot sustain their consumption get blackout
