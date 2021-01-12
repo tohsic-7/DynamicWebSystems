@@ -15,7 +15,8 @@ class ProsumerControlPage extends Component {
         buffer_size: 0,
         excess_slider_value: 0,
         under_slider_value: 0,
-        image_upload: false
+        image_upload: false,
+        img_path: ""
 
     };
 
@@ -29,6 +30,9 @@ class ProsumerControlPage extends Component {
     componentDidMount(){
         this.mounted = true;
         this.fetchProsumerData();
+        setTimeout(() => {
+            this.load_image();
+        }, 100)
     }
 
     componentWillUnmount(){
@@ -44,6 +48,7 @@ class ProsumerControlPage extends Component {
                     ratio_excess
                     ratio_under
                     buffer_size
+                    img_path
                 }
             }
                 `
@@ -68,6 +73,7 @@ class ProsumerControlPage extends Component {
             this.setState({ratio_under: resData.data.getOneProsumer.ratio_under});
             this.setState({under_slider_value: resData.data.getOneProsumer.ratio_under});
             this.setState({buffer_size: resData.data.getOneProsumer.buffer_size});
+            this.setState({img_path: resData.data.getOneProsumer.img_path});
             })
             .catch(err => {
             console.log(err);
@@ -185,11 +191,51 @@ class ProsumerControlPage extends Component {
         var file = document.getElementById("file_input").files[0];
         var formData = new FormData()
         formData.append('file', file);
-        console.log(formData.get("file"));
 
-        fetch('https://localhost:4000/uploadImage', {
+        await fetch('https://localhost:4000/uploadImage', {
         method: 'POST',
         body: formData
+        }).then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+            return res;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+        
+        
+        let requestBody = {
+            query: `
+                mutation {
+                    updateProsumer(_id:"${this.context.userId}", img_path:"${file.name}") {
+                        img_path
+                    }
+                }
+                `
+        };
+    
+        await fetch('https://localhost:4000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+        'Content-Type': 'application/json'
+         }
+        })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+            return res.json();
+        })
+        .then(resData => {
+                this.setState({img_path: resData.data.updateProsumer.img_path});
+                this.load_image();
+                this.image_uploader_bool();
+        })
+        .catch(err => {
+            console.log(err);
         });
 
     }
@@ -216,12 +262,8 @@ class ProsumerControlPage extends Component {
         }
     }
 
-    image_uploader(){
-        var file = document.getElementById("file_input").files[0];
-        fs.writeFileSync("./public/images/prosumers", file, function(err){
-            if (err) throw err;
-            console.log("hurraaaaa!");
-        })
+    load_image(){
+        document.getElementById("img").src = "https://localhost:4000/public/prosumers/" + this.state.img_path;
     }
 
 
@@ -257,7 +299,7 @@ class ProsumerControlPage extends Component {
             </div>
 
             <div className="display-data-container">
-               <img className="img-house" src='./images/prosumers/hej.jpeg' alt="heeeeeej" />
+               <img className="img-house" id ="img" alt="No image uploaded" />
                 <br/>
                 {!this.state.image_upload && <button className="btn btn-info" id="house-button" onClick={this.image_uploader_bool.bind(this)}> Change house image</button>}
                 {this.state.image_upload && <div>

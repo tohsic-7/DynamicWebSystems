@@ -22,6 +22,8 @@ const options = {
 };
  
 app.use(bodyParser.json());
+app.use("/public/prosumers", express.static("public"));
+app.use("/public/managers", express.static("public"));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -47,14 +49,19 @@ var storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     /*Appending extension with original name*/
-    cb(null, file.originalname + path.extname(file.originalname)) 
+    cb(null, file.originalname) 
   }
 })
 
 var upload = multer({ storage: storage });
 
 app.post("/uploadImage", upload.single('file'), function(req, res){
-    console.log(req.file);
+    if(req.file){
+      return res.sendStatus(200);
+    }
+    else{
+      return res.sendStatus(404);
+    }
 
 })
 
