@@ -133,12 +133,13 @@ class ManageUsers extends Component {
         } 
     }
     
-    blockHandler = (id, excess, blackout) =>{
+    blockHandler = (id, username, under, excess, blackout) =>{
         if(blackout){
             //can't block prosumer during blackout
             return
         }
         document.getElementById(id).classList.add("bg-warning");
+        document.getElementById(username).disabled = true;
         let blockTime = (Math.random() * (101 - 10) + 10)*1000;
         let ratio_excess = excess
 
@@ -191,6 +192,7 @@ class ManageUsers extends Component {
             .then(()=>{
                 if(document.getElementById(id)!== null){
                     document.getElementById(id).classList.remove("bg-warning");
+                    document.getElementById(username).disabled = false;
                 }
             })
         }, blockTime);
@@ -284,8 +286,8 @@ class ManageUsers extends Component {
                 <td className={prosumer.blackout?"text-white":""}>{prosumer.blackout?"True":"False"}</td>
                 <td><button className = "btn btn-success" type="submit" onClick={() => {this.visitHandler(prosumer)}}>Visit</button></td>
                 <td>
-                    <button className = {prosumer.blackout?"btn btn-warning":"btn btn-dark"} type="submit" disabled={prosumer.blackout?true:false}
-                        onClick={() => {this.blockHandler(prosumer._id, prosumer.ratio_excess, prosumer.blackout)}}>Block
+                    <button className = {prosumer.blackout?"btn btn-warning":"btn btn-dark"} id={prosumer.username} type="submit" disabled={prosumer.blackout?true:false}
+                        onClick={() => {this.blockHandler(prosumer._id, prosumer.username, prosumer.ratio_under, prosumer.ratio_excess, prosumer.blackout)}}>Block
                     </button>
                 </td>
                 <td><button className = "btn btn-danger" type="submit" onClick={() => {this.removeHandler(prosumer._id)}}>Remove</button></td>
