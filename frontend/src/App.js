@@ -13,6 +13,7 @@ import ManagerRoute from './routing/ManagerRoute';
 
 import ProsumerControlPage from './pages/prosumer_control'
 import './App.css';
+require("dotenv").config()
 
 const jwt = require("jsonwebtoken");
 
