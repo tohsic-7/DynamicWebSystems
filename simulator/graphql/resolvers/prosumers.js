@@ -43,7 +43,6 @@ module.exports = {
         }
     },
     getProsumers: async (args, req)=> {
-        //console.log(req.isAuth);
         try{
             prosumers = await Prosumer.find();
             return prosumers.map(prosumer => {
