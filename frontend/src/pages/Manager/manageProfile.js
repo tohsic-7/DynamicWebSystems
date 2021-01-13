@@ -8,6 +8,7 @@ class ManageProfile extends Component {
         ratio_slider_value: 0,
         buffer_size:0,
         production:0,
+        production_cap: 0,
         username: '',
         image_upload: false,
         img_path: ""
@@ -54,6 +55,7 @@ class ManageProfile extends Component {
                 buffer_size
                 consumption
                 production
+                production_cap
                 status
                 ratio
                 demand
@@ -85,6 +87,7 @@ class ManageProfile extends Component {
             this.setState({ratio_slider_value: manager.ratio});
             this.setState({username: manager.username});
             this.setState({img_path: manager.img_path});
+            this.setState({production_cap: manager.production_cap});
             })
             .catch(err => {
             console.log(err);
@@ -170,7 +173,7 @@ class ManageProfile extends Component {
             query: `
                 mutation {
                     updateManager(_id:"${this.context.userId}", production_cap:${production}) {
-                        production
+                        production_cap
                     }
                 }
                 `
@@ -189,7 +192,7 @@ class ManageProfile extends Component {
             return res.json();
         })
         .then(resData => {
-            this.setState({production: resData.data.updateManager.production});
+            this.setState({production_cap: resData.data.updateManager.production_cap});
         })
         .catch(err => {
             console.log(err);
@@ -337,10 +340,10 @@ class ManageProfile extends Component {
                             </div>
                         </li>
 
-                        <li className="list-group-item">Your current electricity production is: {this.state.production} Wh
+                        <li className="list-group-item">Your current electricity production cap is: {this.state.production_cap} Wh
                             <div className="text-input">
                                 <input type="number" id="productionInt" placeholder="Change production of electricity"></input>
-                                <br/><br/><button type="submit" className="btn btn-info" onClick={this.submitProductionHandler} ref={this.productionEl}> Update production </button>
+                                <br/><br/><button type="submit" className="btn btn-info" onClick={this.submitProductionHandler} ref={this.productionEl}> Update production cap </button>
                             </div>
                         </li>
                     </ul>
