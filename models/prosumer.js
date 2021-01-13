@@ -7,7 +7,7 @@ var prosumerSchema = new Schema({
     username: {type: String, required: true, unique:true},
     password: {type: String, required: true},
     buffer: {type: Number, default: 0},
-    buffer_size: {type: Number, required: true},
+    buffer_size: {type: Number, default: 1000},
     wind: {type: Number, default: 0},
     consumption: {type: Number, default: 0},
     consumed_from_grid: {type: Number, default: 0},

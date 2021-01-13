@@ -52,6 +52,22 @@ class AuthPage extends Component {
             }
             `
             };
+            fetch(process.env.REACT_APP_API_URL, {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed!');
+                }
+                return res.json();
+            })
+            .catch(err => {
+                console.log(err);
+            });
         }
 
         else if(this.state.isLogin && user === 'Manager'){
@@ -73,7 +89,7 @@ class AuthPage extends Component {
             headers: {
             'Content-Type': 'application/json'
             }
-        })
+            })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
                     throw new Error('Failed!');
@@ -156,7 +172,7 @@ class AuthPage extends Component {
                     <label htmlFor="user" >Select your role</label>
                     <select className="form-control" ref={this.role}>
                         <option>Prosumer</option>
-                        <option>Manager</option>
+                        {this.state.isLogin && <option>Manager</option>}
                     </select>
                 </div>
                 <div className="form-actions">
