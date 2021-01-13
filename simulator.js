@@ -12,7 +12,7 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAn
 var consumption_mean = 350;
 var consumption_dev = 20;
 // Wind for year normal dist values
-var wind_mean_year = 3;
+var wind_mean_year = 7;
 var wind_dev_year = 1;
 // Wind per day normal dist values (mean per day changes)
 var wind_mean_day = 3;
