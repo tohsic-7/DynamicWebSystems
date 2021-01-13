@@ -50,7 +50,7 @@ class ProsumerControlPage extends Component {
             }
             `
         }
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -89,7 +89,7 @@ class ProsumerControlPage extends Component {
                     `
             };
 
-            fetch('https://localhost:4000/graphql', {
+            fetch(process.env.REACT_APP_API_URL, {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
@@ -122,7 +122,7 @@ class ProsumerControlPage extends Component {
                 }
                 `
         };
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -158,7 +158,7 @@ class ProsumerControlPage extends Component {
 
 
 
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -185,7 +185,7 @@ class ProsumerControlPage extends Component {
         var formData = new FormData()
         formData.append('file', file);
 
-        await fetch('https://localhost:4000/uploadImage', {
+        await fetch(process.env.REACT_APP_IMG_UPLOAD_URL, {
         method: 'POST',
         body: formData
         }).then(res => {
@@ -209,7 +209,7 @@ class ProsumerControlPage extends Component {
                 `
         };
     
-        await fetch('https://localhost:4000/graphql', {
+        await fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -256,7 +256,7 @@ class ProsumerControlPage extends Component {
     }
 
     load_image(){
-        document.getElementById("img").src = "https://localhost:4000/public/prosumers/" + this.state.img_path;
+        document.getElementById("img").src = process.env.REACT_APP_IMG_LOAD + this.state.img_path;
     }
 
 

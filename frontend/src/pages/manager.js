@@ -56,7 +56,7 @@ class ManagerPage extends Component {
                 }
                 `
         }
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -104,7 +104,7 @@ class ManagerPage extends Component {
                     `
         }
     }
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {
@@ -145,7 +145,7 @@ class ManagerPage extends Component {
             }
                 `
         }
-        fetch('https://localhost:4000/graphql', {
+        fetch(process.env.REACT_APP_API_URL, {
         method: 'POST',
         body: JSON.stringify(requestBody),
         headers: {

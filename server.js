@@ -64,15 +64,6 @@ app.post("/uploadImage", upload.single('file'), function(req, res){
   }
 })
 
-app.post("/uploadImageManager", upload.single('file'), function(req, res){
-  if(req.file){
-    return res.sendStatus(200);
-  }
-  else{
-    return res.sendStatus(404);
-  }
-})
-
 https.createServer(options, app).listen(4000, () => console.log('server running'));
 
 console.log('Running a GraphQL API server at http://localhost:4000/graphql');
