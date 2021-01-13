@@ -34,7 +34,6 @@ function authManager(token){
             return true;
         }
         else{
-            console.log("wrong user type");
             return false;
         }
     }

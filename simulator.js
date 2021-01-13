@@ -12,7 +12,7 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAn
 var consumption_mean = 350;
 var consumption_dev = 20;
 // Wind for year normal dist values
-var wind_mean_year = 7.5;
+var wind_mean_year = 7;
 var wind_dev_year = 1;
 // Wind per day normal dist values (mean per day changes)
 var wind_mean_day = 3;
@@ -129,7 +129,10 @@ async function run(){
                 let timer = man.timer;
                 // if status running return maximum production from coal plant and ratio to buffer
                 if (man.status == "running"){
-                    var produced = coalProduction(10, man.production_cap);
+                    var produced = coalProduction(timer, man.production_cap);
+                    if(produced < man.production_cap){
+                        timer += 1;
+                    }
                     var new_buffer = man.buffer + produced * (man.ratio/100);
                     if(new_buffer > man.buffer_size){
                         new_buffer = man.buffer_size;
@@ -145,7 +148,7 @@ async function run(){
                     }
                     var produced = produced * (1-(man.ratio/100));
                     timer += 1;
-                    if (timer >= 10){
+                    if (man.production_cap >= produced){
                         status = "running";
                         await resolvers.updateManager({_id: man._id, status: status});
                     }
