@@ -48,7 +48,6 @@ class ManageUsers extends Component {
                   consumed_from_grid
                   production
                   ratio_excess
-                  ratio_under
                   blackout
                   online
                   img_path
@@ -142,15 +141,13 @@ class ManageUsers extends Component {
         document.getElementById(id).classList.add("bg-warning");
         document.getElementById(username).disabled = true;
         let blockTime = (Math.random() * (101 - 10) + 10)*1000;
-        let ratio_under = under;
         let ratio_excess = excess
 
         let requestBody = {
             query: `
             mutation{
-                updateProsumer(_id:"${id}",ratio_under:100, ratio_excess:0){
+                updateProsumer(_id:"${id}", ratio_excess:100){
                   ratio_excess
-                  ratio_under
                 }
               }
                 `
@@ -172,9 +169,8 @@ class ManageUsers extends Component {
         requestBody = {
             query: `
             mutation{
-                updateProsumer(_id:"${id}",ratio_under:${ratio_under}, ratio_excess:${ratio_excess}){
+                updateProsumer(_id:"${id}", ratio_excess:${ratio_excess}){
                   ratio_excess
-                  ratio_under
                 }
               }
                 `

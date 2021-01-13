@@ -340,7 +340,7 @@ class ManageProfile extends Component {
                         <li className="list-group-item">Your current electricity production is: {this.state.production} Wh
                             <div className="text-input">
                                 <input type="number" id="productionInt" placeholder="Change production of electricity"></input>
-                                <br/><br/><button type="submit" className="btn btn-info" onClick={this.submitProductionHandler} ref={this.productionEl}> Update battery size </button>
+                                <br/><br/><button type="submit" className="btn btn-info" onClick={this.submitProductionHandler} ref={this.productionEl}> Update production </button>
                             </div>
                         </li>
                     </ul>
