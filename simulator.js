@@ -161,7 +161,6 @@ async function run(){
                     }  else{
                         var produced = 0;
                     }
-                    
                     var grid_require = grid_consumption - grid_electricity;
 
                     // If grid is not getting enough electricity use buffer
