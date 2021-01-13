@@ -48,7 +48,6 @@ class ManageUsers extends Component {
                   consumed_from_grid
                   production
                   ratio_excess
-                  ratio_under
                   blackout
                   online
                   img_path
@@ -134,22 +133,20 @@ class ManageUsers extends Component {
         } 
     }
     
-    blockHandler = (id, under, excess, blackout) =>{
+    blockHandler = (id, excess, blackout) =>{
         if(blackout){
             //can't block prosumer during blackout
             return
         }
         document.getElementById(id).classList.add("bg-warning");
         let blockTime = (Math.random() * (101 - 10) + 10)*1000;
-        let ratio_under = under;
         let ratio_excess = excess
 
         let requestBody = {
             query: `
             mutation{
-                updateProsumer(_id:"${id}",ratio_under:100, ratio_excess:0){
+                updateProsumer(_id:"${id}", ratio_excess:100){
                   ratio_excess
-                  ratio_under
                 }
               }
                 `
@@ -171,9 +168,8 @@ class ManageUsers extends Component {
         requestBody = {
             query: `
             mutation{
-                updateProsumer(_id:"${id}",ratio_under:${ratio_under}, ratio_excess:${ratio_excess}){
+                updateProsumer(_id:"${id}", ratio_excess:${ratio_excess}){
                   ratio_excess
-                  ratio_under
                 }
               }
                 `
@@ -289,7 +285,7 @@ class ManageUsers extends Component {
                 <td><button className = "btn btn-success" type="submit" onClick={() => {this.visitHandler(prosumer)}}>Visit</button></td>
                 <td>
                     <button className = {prosumer.blackout?"btn btn-warning":"btn btn-dark"} type="submit" disabled={prosumer.blackout?true:false}
-                        onClick={() => {this.blockHandler(prosumer._id, prosumer.ratio_under, prosumer.ratio_excess, prosumer.blackout)}}>Block
+                        onClick={() => {this.blockHandler(prosumer._id, prosumer.ratio_excess, prosumer.blackout)}}>Block
                     </button>
                 </td>
                 <td><button className = "btn btn-danger" type="submit" onClick={() => {this.removeHandler(prosumer._id)}}>Remove</button></td>
