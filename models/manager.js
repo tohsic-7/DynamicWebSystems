@@ -8,7 +8,7 @@ var managerSchema = new Schema({
     buffer_size: {type: Number, required: true},
     consumption: {type: Number, default: 1000},
     production: {type: Number, default: 0},
-    production_cap: {type: Number, default: 0},
+    production_cap: {type: Number, default: 1000},
     ratio:{type: Number, default: 20},
     status: {type: String, default: "stopped"},
     timer: {type: Number, default: 0},
