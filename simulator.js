@@ -12,8 +12,8 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology:true, useFindAn
 var consumption_mean = 350;
 var consumption_dev = 20;
 // Wind for year normal dist values
-var wind_mean_year = 6;
-var wind_dev_year = 1;
+var wind_mean_year = 7.5;
+var wind_dev_year = 1.5;
 // Wind per day normal dist values (mean per day changes)
 var wind_mean_day = 3;
 var wind_dev_day = 0.5;
@@ -36,8 +36,7 @@ async function run(){
 
         updateWindDay();
 
-        for(i=0; i<24; i++){
-
+        for(var k=0; k<24; k++){
             await sleep(3000);
             var prosumers = await resolvers.getProsumers();
 
@@ -281,7 +280,7 @@ async function blackouts(grid_electricity){
     var c_index = 0;
 
     // Randomizes if prosumer or consumer should get electricity
-    for(i=0; i<(prosumers.length + consumers.length); i++){
+    for(var i=0; i<(prosumers.length + consumers.length); i++){
         if(((Math.random() == 0) && p_index < shuffled_prosumers.length) || c_index >= shuffled_consumers.length){
             var prosumer = shuffled_prosumers[p_index];
             p_index += 1;
