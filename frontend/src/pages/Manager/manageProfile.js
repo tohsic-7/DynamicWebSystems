@@ -164,9 +164,6 @@ class ManageProfile extends Component {
     }
 
     submitProductionHandler = () => {
-        if(this.state.status!=='running'){
-            return;
-        }
         const production = document.getElementById("productionInt").value;
         let requestBody = {
             query: `

@@ -255,7 +255,7 @@ function coalProduction(t, pc){
 }
 
 async function calcModelledPrice(consumption, wind){
-    var modelledPrice = 0.3*(wind_mean_year/wind)*(consumption/await averageConsumption());
+    var modelledPrice = 0.6*(wind_mean_year/wind)*(consumption/await averageConsumption());
     return modelledPrice;
 }
 
