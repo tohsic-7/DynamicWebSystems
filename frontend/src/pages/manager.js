@@ -12,6 +12,8 @@ class ManagerPage extends Component {
         price: 0,
         modelled_price: 0,
         price_bool: false,
+        first_load: true
+
     };
     constructor(props){
         super(props);
@@ -24,10 +26,6 @@ class ManagerPage extends Component {
     componentDidMount(){
         this.mounted = true;
         this.fetchManagerData();
-        this.fetchId = setTimeout(() =>{
-            var check = document.getElementById("priceBool");
-            check.checked = this.state.price_bool;
-        },100)
         this.updateValues();
     }
 
@@ -168,6 +166,11 @@ class ManagerPage extends Component {
             this.setState({price: resData.data.getOneManager.price});
             this.setState({modelled_price: resData.data.getOneManager.modelled_price});
             this.setState({price_bool: resData.data.getOneManager.price_bool});
+            if(this.state.first_load){
+                var check = document.getElementById("priceBool");
+                check.checked = this.state.price_bool;
+                this.setState({first_load: false});
+            }
             })
         .catch(err => {
             console.log(err);

@@ -27,9 +27,6 @@ class ManageProfile extends Component {
     componentDidMount(){
         this.mounted = true;
         this.fetchManager();
-        setTimeout(() => {
-            this.load_image();
-        }, 100)
     }
     componentWillUnmount(){
         this.mounted = false;
@@ -43,7 +40,7 @@ class ManageProfile extends Component {
         }
     }
 
-    fetchManager = () => {
+    fetchManager(){
         let requestBody = {
             query: `
             {
@@ -85,7 +82,9 @@ class ManageProfile extends Component {
             this.setState({ratio_slider_value: manager.ratio});
             this.setState({username: manager.username});
             this.setState({img_path: manager.img_path});
+            this.load_image();
             })
+            
             .catch(err => {
             console.log(err);
         });

@@ -13,7 +13,8 @@ class ProsumerControlPage extends Component {
         excess_slider_value: 0,
         under_slider_value: 0,
         image_upload: false,
-        img_path: ""
+        img_path: "",
+        first_load: true
 
     };
 
@@ -27,9 +28,6 @@ class ProsumerControlPage extends Component {
     componentDidMount(){
         this.mounted = true;
         this.fetchProsumerData();
-        setTimeout(() => {
-            this.load_image();
-        }, 100)
     }
 
     componentWillUnmount(){
@@ -71,6 +69,10 @@ class ProsumerControlPage extends Component {
             this.setState({under_slider_value: resData.data.getOneProsumer.ratio_under});
             this.setState({buffer_size: resData.data.getOneProsumer.buffer_size});
             this.setState({img_path: resData.data.getOneProsumer.img_path});
+            if(this.state.first_load){
+                this.load_image();
+                this.setState({first_load: false});
+            }
             })
             .catch(err => {
             console.log(err);
@@ -224,8 +226,8 @@ class ProsumerControlPage extends Component {
         })
         .then(resData => {
                 this.setState({img_path: resData.data.updateProsumer.img_path});
-                this.load_image();
                 this.image_uploader_bool();
+                this.load_image();
         })
         .catch(err => {
             console.log(err);
