@@ -17,7 +17,8 @@ type Prosumer{
   ratio_under: Int,
   online: Boolean,
   blackout: Boolean,
-  img_path: String
+  img_path: String,
+  price: Float
 }
 
 type Consumer{
@@ -78,7 +79,8 @@ type RootMutation{
         ratio_under: Int,
         online: Boolean,
         blackout: Boolean,
-        img_path: String
+        img_path: String,
+        price: Float
     ):Prosumer!
 
     deleteProsumer(_id:ID!): Boolean
@@ -95,7 +97,8 @@ type RootMutation{
         ratio_under: Int,
         online: Boolean,
         blackout: Boolean,
-        img_path: String
+        img_path: String,
+        price: Float
     ):Prosumer
 
     insertManager(

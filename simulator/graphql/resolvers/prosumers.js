@@ -19,7 +19,8 @@ function getActiveAttributes(args){
         ratio_under: args.ratio_under,
         online: args.online,
         blackout: args.blackout,
-        img_path: args.img_path
+        img_path: args.img_path,
+        price: args.price
     }
     // Delete all attributes which are not set for this update
     // such that only the ones that are set remain

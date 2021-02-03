@@ -16,7 +16,8 @@ var prosumerSchema = new Schema({
     ratio_under: {type: Number, default: 50},
     online: {type: Boolean, default:false},
     blackout: {type: Boolean, default: false},
-    img_path: String
+    img_path: String,
+    price: {type: Number, default: 0},
 });
 
 module.exports = mongoose.model('Prosumer', prosumerSchema, 'prosumer');

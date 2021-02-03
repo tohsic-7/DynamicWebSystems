@@ -8,7 +8,8 @@ class ProsumerPage extends Component {
         consumption: 0,
         net_production: 0,
         buffer: 0,
-        username: ""
+        username: "",
+        price: 0
 
     };
 
@@ -46,6 +47,7 @@ class ProsumerPage extends Component {
                     consumption
                     buffer
                     username
+                    price
                 }
             }
                 `
@@ -70,6 +72,7 @@ class ProsumerPage extends Component {
             this.setState({net_production: (resData.data.getOneProsumer.production - resData.data.getOneProsumer.consumption).toFixed(2)});
             this.setState({buffer: resData.data.getOneProsumer.buffer.toFixed(2)});
             this.setState({username: resData.data.getOneProsumer.username});
+            this.setState({price: resData.data.getOneProsumer.price.toFixed(3)});
             })
             .catch(err => {
             console.log(err);
@@ -93,6 +96,8 @@ class ProsumerPage extends Component {
                     <br/> {this.state.net_production} Wh</li>
                     <li className="list-group-item">Electricity in buffer: 
                     <br/>{this.state.buffer} Wh</li>
+                    <li className="list-group-item">Electricity price: 
+                    <br/>{this.state.price} kr</li>
                 </ul>
             </div>
         );

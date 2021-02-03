@@ -124,6 +124,9 @@ async function run(){
 
             var manager = await resolvers.getManagers();
 
+            let price;
+            let modelledPrice = await calcModelledPrice(grid_consumption, wind_mean_day);
+
             for (man of manager){
                 let timer = man.timer;
                 // if status running return maximum production from coal plant and ratio to buffer
@@ -178,8 +181,7 @@ async function run(){
 
                     }
                 }
-                let price;
-                let modelledPrice = await calcModelledPrice(grid_consumption, wind_mean_day);
+
                 if(man.price_bool){
                     price = modelledPrice;
                 }else{
@@ -201,7 +203,7 @@ async function run(){
 
             //use electricity in grid to distribute to users.
             
-            blackouts(grid_electricity);
+            blackouts(grid_electricity, price);
             
 
         }
@@ -267,7 +269,7 @@ async function averageConsumption(){
 }
 
 // Distributes grid electricity randomly between houses and those who cannot sustain their consumption get blackout
-async function blackouts(grid_electricity){
+async function blackouts(grid_electricity, price){
 
     var prosumers = await resolvers.getProsumers();
     var consumers = await resolvers.getConsumers();
@@ -295,7 +297,7 @@ async function blackouts(grid_electricity){
             } else{
                 blackout_bool = true;
             }
-            await resolvers.updateProsumer({_id: prosumer._id, blackout: blackout_bool})
+            await resolvers.updateProsumer({_id: prosumer._id, blackout: blackout_bool, price: price})
         } else{
             var consumer = shuffled_consumers[c_index];
             c_index += 1;
