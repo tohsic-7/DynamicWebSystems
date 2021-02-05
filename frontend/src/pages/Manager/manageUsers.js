@@ -275,7 +275,6 @@ class ManageUsers extends Component {
             this.fetchConsumers();
         })
     }
-//this.state.status!=='stopped' ?"btn btn-danger" :"btn btn-success"
 
     render(){
         const prosumersList = this.state.prosumers.map(prosumer => {
@@ -293,7 +292,7 @@ class ManageUsers extends Component {
                 <td><button className = "btn btn-danger" type="submit" onClick={() => {this.removeHandler(prosumer._id)}}>Remove</button></td>
               </tr>
             );
-          });
+        });
         const consumersList = this.state.consumers.map((consumer, index) => {
             return(
                 <tr key={consumer._id} id={consumer._id} className={consumer.blackout?"bg-dark":""}>

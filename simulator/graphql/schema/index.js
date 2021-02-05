@@ -101,6 +101,11 @@ type RootMutation{
         price: Float
     ):Prosumer
 
+    adminUpdateProsumerCredentials(
+      _id: ID!, 
+      username:String, 
+      password: String):Prosumer
+
     insertManager(
         username: String!,
         password: String!,
