@@ -169,16 +169,13 @@ module.exports = {
 
     adminUpdateProsumerCredentials: async (args,req, res) => {
         try{
-            var manager = await Prosumer.findOne({ _id: args._id });
+            var prosumer = await Prosumer.findOne({ _id: args._id });
             let nonEmptyNewPassword = false;
             let nonEmptyNewUsername = false
-            let updatedManager = null;
+            let updatedProsumer = null;
             
             if( args.password !== null && args.password !== undefined && args.password !== ""){
                 nonEmptyNewPassword = true;
-            }
-            if(nonEmptyNewPassword){
-                throw new Error("IncorrectPassword");
             }
             if( args.username !== null && args.username !== undefined && args.username !== ""){
                 nonEmptyNewUsername = true;
@@ -187,8 +184,8 @@ module.exports = {
                     throw new Error("UsernameTaken");
                 }
             }
-            if (!manager) {
-                throw new Error('Manager does not exist!');
+            if (!prosumer) {
+                throw new Error('Prosumer does not exist!');
             }
             // throw all possible errors before updating and/or returning
             if(nonEmptyNewUsername){
