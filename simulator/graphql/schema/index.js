@@ -98,6 +98,11 @@ type RootMutation{
         img_path: String
     ):Prosumer
 
+    adminUpdateProsumerCredentials(
+      _id: ID!, 
+      username:String, 
+      password: String):Prosumer
+
     insertManager(
         username: String!,
         password: String!,

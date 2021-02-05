@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 //const { findOneAndUpdate } = require('../../../models/manager');
 
 const Manager = require("../../../models/manager");
+const Prosumer = require("../../../models/prosumer")
 
 
 function getActiveAttributes(args){
@@ -161,6 +162,43 @@ module.exports = {
                 updatedManager = await Manager.findOneAndUpdate({_id: args._id}, {password: hashedPassword}, {new: true});
             }
             return updatedManager;
+        }catch(err){
+            return err;
+        }
+    },
+
+    adminUpdateProsumerCredentials: async (args,req, res) => {
+        try{
+            var manager = await Prosumer.findOne({ _id: args._id });
+            let nonEmptyNewPassword = false;
+            let nonEmptyNewUsername = false
+            let updatedManager = null;
+            
+            if( args.password !== null && args.password !== undefined && args.password !== ""){
+                nonEmptyNewPassword = true;
+            }
+            if(nonEmptyNewPassword){
+                throw new Error("IncorrectPassword");
+            }
+            if( args.username !== null && args.username !== undefined && args.username !== ""){
+                nonEmptyNewUsername = true;
+                const takenUsername = await Prosumer.findOne({ username: args.username });
+                if(takenUsername){
+                    throw new Error("UsernameTaken");
+                }
+            }
+            if (!manager) {
+                throw new Error('Manager does not exist!');
+            }
+            // throw all possible errors before updating and/or returning
+            if(nonEmptyNewUsername){
+                updatedProsumer = await Prosumer.findOneAndUpdate({_id: args._id}, {username: args.username}, {new: true});
+            }
+            if(nonEmptyNewPassword){  
+                const hashedPassword = await bcrypt.hash(args.password, 12);
+                updatedProsumer = await Prosumer.findOneAndUpdate({_id: args._id}, {password: hashedPassword}, {new: true});
+            }
+            return updatedProsumer;
         }catch(err){
             return err;
         }
