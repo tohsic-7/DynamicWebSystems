@@ -1,6 +1,13 @@
 import React, {Component} from 'react'
 import './credentialsModal.css'
 class CredentialsModal extends Component{
+    constructor(props){
+        super(props);
+        this.usernameEl = React.createRef();
+        this.passwordEl = React.createRef();
+        this.confirmPasswordEl = React.createRef();
+    }
+
     credentialsHandler = event => {
         const username = this.usernameEl.current.value;
         const password = this.passwordEl.current.value;
@@ -47,8 +54,6 @@ class CredentialsModal extends Component{
 
             document.getElementById("usernameHelper").style.display = "none";
             document.getElementById("confirmPasswordHelper").style.display = "none";
-
-            this.fetchManager();
         })
         .catch(err => {
             console.log(err);
@@ -84,7 +89,7 @@ class CredentialsModal extends Component{
                         <button className="btn btn-danger" type="submit" style={{marginRight: 10 + 'px'}} onClick={this.props.onCancel}>
                             Cancel
                         </button>
-                        <button className="btn btn-primary">
+                        <button className="btn btn-primary"type="submit" onClick={this.credentialsHandler}>
                             Update
                         </button>
                     </section>
