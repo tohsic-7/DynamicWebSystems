@@ -32,8 +32,9 @@ function sleep(ms) {
   }
 
 async function run(){
+    var day_of_year = 1;
     while(true){
-
+        updateMeanConsumption(day_of_year);
         updateWindDay();
 
         for(var k=0; k<24; k++){
@@ -57,7 +58,6 @@ async function run(){
                 var produced = calcProduction(new_wind);
 
                 // update consumption
-
                 var consumed = updateConsumption();
 
 
@@ -202,8 +202,12 @@ async function run(){
             //use electricity in grid to distribute to users.
             
             blackouts(grid_electricity);
-            
 
+        }
+        if(day_of_year == 365){
+            day_of_year = 1;
+        } else{
+            day_of_year = day_of_year + 1;
         }
     }
 }   
@@ -221,6 +225,15 @@ function updateWindDay(){
 
     wind_mean_day = wind_mean_year + wind_dev_year * z
 }
+
+function updateMeanConsumption(day){
+    if (day>=325 || day<=60){
+        consumption_mean = 500;
+    } else{
+        consumption_mean = 350;
+    }
+}
+
 // update wind for prosumer using gaussian distribution
 function updateWind(){
     var z = boxMullerTransform();
