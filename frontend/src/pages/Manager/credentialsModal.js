@@ -18,6 +18,13 @@ class CredentialsModal extends Component{
             event.preventDefault();
             return
         }
+
+        if((password.trim().length > 0 && confirmPassword.trim().length === 0) || (password.trim().length === 0 && confirmPassword.trim().length > 0)){
+            document.getElementById("confirmPasswordHelper").style.display = "block";
+            event.preventDefault();
+            return
+        }
+
         let requestBody = {
             query: `mutation{
                     adminUpdateProsumerCredentials(_id:"${this.props.p._id}",username:"${username}", password:"${password}"){
